@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "repository": "Gudui/OdysseyLocalCoop",
+  "labels": [
+    { "name": "bug", "color": "d73a4a", "description": "Something is not working" },
+    { "name": "enhancement", "color": "a2eeef", "description": "New or improved behavior" },
+    { "name": "alpha", "color": "fbca04", "description": "Applies to the alpha release line" },
+    { "name": "severity: critical", "color": "b60205", "description": "Can prevent boot, corrupt routing, or block progression" },
+    { "name": "severity: high", "color": "d93f0b", "description": "Major gameplay defect or softlock" },
+    { "name": "severity: medium", "color": "fbca04", "description": "Important defect with a workaround" },
+    { "name": "severity: low", "color": "c5def5", "description": "Cosmetic or low-impact defect" },
+    { "name": "input", "color": "1d76db", "description": "Controllers and player routing" },
+    { "name": "respawn", "color": "5319e7", "description": "Death, recovery, and respawn" },
+    { "name": "health", "color": "e99695", "description": "Player health and healing" },
+    { "name": "camera/cutscene", "color": "bfd4f2", "description": "Camera, demos, and presentation" },
+    { "name": "transition", "color": "0e8a16", "description": "Stage, kingdom, pipe, or wire transitions" },
+    { "name": "platform: atmosphere", "color": "006b75", "description": "Physical Switch and Atmosphere support" },
+    { "name": "assets", "color": "f9d0c4", "description": "Redistributable assets and user-side builders" }
+  ],
+  "issues": [
+    {
+      "title": "Gate P2 creation on Odyssey's native player-mode lifecycle",
+      "labels": ["bug", "alpha", "severity: critical", "input"],
+      "body": "The mod currently creates P2 whenever a second controller is present, even when Odyssey's native player mode is not compatible. Entering native 2P mode can route Cappy to the wrong player or make P1 control both actors. Add an explicit lifecycle gate so P2 exists only in the supported full-player mode, and make transitions between menu, stage, and controller states safe.\n\nCurrent workaround: use normal in-game 1P mode and restart after entering native 2P mode."
+    },
+    {
+      "title": "Prevent terminal-death recovery softlocks",
+      "labels": ["bug", "alpha", "severity: high", "respawn"],
+      "body": "Some P2 terminal-damage paths can select recovery before the native dead state. P2 may remain able to turn but cannot move, respawn, or accept further damage, and a boss scene may stop progressing. Preserve terminal death until the delayed respawn path completes, without changing recoverable falls or solo behavior."
+    },
+    {
+      "title": "Make partner-directed recovery destinations terrain-safe",
+      "labels": ["bug", "alpha", "severity: high", "respawn"],
+      "body": "A recovery bubble can place the returning player below uneven or void-adjacent terrain and immediately cause damage or another recovery. Replace the fixed vertical offset with a destination rule that respects stable ground or the partner's safe point, including slopes, moving surfaces, and both-player recovery cases."
+    },
+    {
+      "title": "Correct P2 healing and maximum-health event coverage",
+      "labels": ["bug", "alpha", "severity: high", "health"],
+      "body": "Several native health events still consult or update P1 only. Known cases include hearts converting to coins while P2 is injured, Power Moon healing leaving P2 unchanged, and Life-Up collection while captured leaving P2's maximum health out of sync. Route each event to the collecting player while preserving vanilla shared progression."
+    },
+    {
+      "title": "Preserve the bystander and collector framing during kingdom-event Moon scenes",
+      "labels": ["bug", "alpha", "severity: medium", "camera/cutscene"],
+      "body": "Some kingdom-event Moon scenes move the non-collecting player and remain centered on P1 instead of the collector. Keep the bystander in a safe position and select the collecting player for the relevant scene and camera behavior without changing ordinary Moon pickups."
+    },
+    {
+      "title": "Investigate P2 Cap Kingdom electrical-wire travel stall",
+      "labels": ["bug", "alpha", "severity: medium", "transition"],
+      "body": "P2 cap activation of the required Cap Kingdom electrical wire has been reported to stall without completing travel. Reproduce on the current release build, establish whether cap ownership, actor lookup, or stage-transition state is responsible, and preserve P1 behavior.\n\nCurrent workaround: use P1's cap for the required wire."
+    },
+    {
+      "title": "Remove the visible 2D-to-3D recovery fall-through",
+      "labels": ["bug", "alpha", "severity: low", "respawn", "transition"],
+      "body": "A player recovering from 2D form to a 3D partner can visibly fall through the world once before becoming usable in 3D. The verified case caused no health loss, but the transition should switch collision/form state early enough that the bubble remains visually coherent."
+    },
+    {
+      "title": "Include generated capability metadata in clean Atmosphere packages",
+      "labels": ["bug", "alpha", "severity: critical", "platform: atmosphere"],
+      "body": "Actual-Switch gameplay works with the corrected payload, and the Cascade-to-Sand transition is verified fixed. The clean public alpha package still omits ExLaunch's generated main.npdm, so an installer-only hardware setup may fail before gameplay. Make the package reproduce the known-working payload, verify every copied hash, and confirm a clean hardware boot and stage load."
+    },
+    {
+      "title": "Add a legal user-side builder for the competition HUD",
+      "labels": ["enhancement", "alpha", "severity: medium", "assets"],
+      "body": "The custom competition scoreboard is omitted because its exact stock archive ancestry is unresolved. Identify and hash the required Super Mario Odyssey 1.0.0 stock inputs, rebuild the modified layout entirely on the user's machine, verify the output hash, install it, and enable competition only after validation. Do not publish Nintendo-derived archives."
+    }
+  ]
+}

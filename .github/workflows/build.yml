@@ -1,0 +1,42 @@
+name: Build release package
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pinned sources
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          submodules: recursive
+
+      - name: Build in pinned devkitPro image
+        shell: pwsh
+        run: ./scripts/build.ps1 -UseDocker
+
+      - name: Package
+        shell: pwsh
+        run: ./scripts/package.ps1
+
+      - name: Verify
+        shell: pwsh
+        run: ./scripts/verify.ps1
+
+      - name: Upload verified package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: OdysseyLocalCoop-v0.1.0-alpha.1
+          path: |
+            artifacts/package/*.zip
+            artifacts/package/*.sha256
+            artifacts/build/build-report.json
+            artifacts/package/package-report.json
+            artifacts/verify/verification-report.json
+          if-no-files-found: error

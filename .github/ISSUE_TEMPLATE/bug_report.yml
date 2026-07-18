@@ -1,0 +1,113 @@
+name: Bug report
+description: Report a reproducible Odyssey Local Co-op problem
+title: "[Bug] "
+labels:
+  - bug
+  - alpha
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read KNOWN_ISSUES.md and search existing issues first. Never attach game files, keys, firmware, or unredacted personal data.
+  - type: dropdown
+    id: mod_version
+    attributes:
+      label: Mod version
+      options:
+        - v0.1.0-alpha.1
+        - Self-built from main
+    validations:
+      required: true
+  - type: dropdown
+    id: target
+    attributes:
+      label: Target
+      options:
+        - Ryujinx
+        - Atmosphere / physical Switch (experimental)
+    validations:
+      required: true
+  - type: input
+    id: target_version
+    attributes:
+      label: Ryujinx or system version
+      placeholder: Ryujinx version or Atmosphere/system version
+    validations:
+      required: true
+  - type: input
+    id: game_version
+    attributes:
+      label: Super Mario Odyssey version
+      description: Only 1.0.0 is supported.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: game_mode
+    attributes:
+      label: In-game player mode
+      options:
+        - Normal 1P mode
+        - Odyssey native 2P mode
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: controller_setup
+    attributes:
+      label: Controller setup
+      description: Describe both configured controllers and when they were connected.
+    validations:
+      required: true
+  - type: input
+    id: stage
+    attributes:
+      label: Kingdom and stage
+      placeholder: Cascade Kingdom, Fossil Falls Heights
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Give numbered steps starting from a fresh launch when possible.
+      placeholder: |
+        1. Start the game in normal 1P mode...
+        2. Enter...
+        3. As P2...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: other_mods
+    attributes:
+      label: Other enabled mods or configuration changes
+      description: State whether the issue still occurs with unrelated gameplay mods disabled.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted log or crash information
+      description: Drag in a redacted Ryujinx log or paste the relevant lines. Remove personal paths and unrelated data.
+      render: text
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues and KNOWN_ISSUES.md.
+          required: true
+        - label: I have not attached game files, keys, firmware, or unredacted personal data.
+          required: true

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Known issues
+    url: https://github.com/Gudui/OdysseyLocalCoop/blob/main/KNOWN_ISSUES.md
+    about: Check current limitations and workarounds before opening a report.
+  - name: Releases
+    url: https://github.com/Gudui/OdysseyLocalCoop/releases
+    about: Download the latest published build and checksums.

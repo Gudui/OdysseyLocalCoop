@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest a focused local co-op improvement
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Player problem
+      description: What co-op situation is difficult or impossible today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the desired player-visible result, not only an implementation idea.
+    validations:
+      required: true
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Example scenarios
+      description: List kingdoms, stages, captures, or transitions where this matters.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues and the documented future work.
+          required: true
+        - label: This request does not require distributing Nintendo game data.
+          required: true
