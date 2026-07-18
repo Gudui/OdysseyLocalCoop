@@ -16,3 +16,9 @@ The retained build tooling shows that the layout began from a stock layout and r
 Decision for `v0.1.0-alpha.1`: omit the competition scoreboard archive and do not publish an xdelta patch. The release profile and package must keep the competition HUD disabled when the asset is absent. Gate I will add a user-side builder after the exact Super Mario Odyssey 1.0.0 stock inputs and output hash are established; the builder will enable competition only after producing the verified archive.
 
 This decision affects only distribution. The private development workspace keeps the existing archive for continued development and testing.
+
+## Showcase media
+
+The README screenshot and linked gameplay video were captured by the project author from the mod running in Ryujinx. They are used solely to demonstrate the mod in action. Super Mario Odyssey, its characters, environments, interface, audio, and other game content shown in the capture remain copyright Nintendo.
+
+The screenshot is included in this repository. The gameplay video is hosted on Vimeo; the original capture and any local transcodes remain in the private development workspace and are not distributed in the source repository.

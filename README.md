@@ -2,6 +2,10 @@
 
 Odyssey Local Co-op adds a second full player actor to **Super Mario Odyssey 1.0.0** so two people can play together on one shared screen. It is a local co-op mod, not an online or networked multiplayer mod.
 
+[![Mario and the green second player together in the Sand Kingdom](media/odyssey-local-coop.png)](https://vimeo.com/1211084414/41139bee79?share=copy&fl=sv&fe=ci)
+
+_[Watch the 95-second gameplay showcase on Vimeo.](https://vimeo.com/1211084414/41139bee79?share=copy&fl=sv&fe=ci) The footage is from a development build; the competition scoreboard visible in the corner is not included in this alpha._
+
 This is an early alpha. Save backups are recommended, game behavior outside the tested paths may differ from vanilla, and several important limitations are documented in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
 ## Support status
