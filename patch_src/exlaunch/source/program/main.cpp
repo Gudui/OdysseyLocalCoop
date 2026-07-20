@@ -527,8 +527,9 @@ constexpr unsigned PATCH_0010_GAME_TICKS_PER_SECOND = 60;
  * PlayerUpperPunch2D. Native BlockStateSingleItem stores the block's own
  * receiver sensor at +0x28 before appearItemFromObj consumes it as attacker
  * provenance. Replace only that proven field after Orig. Coin2D's automatic
- * CountUp path bypasses PATCH-0019's existing Coin2D::receiveMsg hook, so the
- * accepted one-shot single-coin brick also receives one private score credit;
+ * CountUp path bypasses PATCH-0019's existing Coin2D::receiveMsg hook. The
+ * exact binary 2D-item initializer enables ItemType::Coin (0), not Coin2D (1),
+ * for this brick; accepted type 0 therefore receives one private score credit.
  * Odyssey remains solely responsible for the native total and item spawn. */
 #define PATCH_0028_ENABLED 1
 
@@ -1890,6 +1891,7 @@ HOOK_DEFINE_TRAMPOLINE(Patch0028BlockBrick2DCoin) {
         int idx = -1;
         int itemType = -1;
         void* singleItemState = nullptr;
+        void* tenCoinState = nullptr;
 
         if (IsPtr8((uintptr_t)block) && IsPtr8((uintptr_t)message) &&
             IsPtr8((uintptr_t)other)) {
@@ -1899,7 +1901,9 @@ HOOK_DEFINE_TRAMPOLINE(Patch0028BlockBrick2DCoin) {
             if (isPlayerUpperPunch) {
                 idx = coinrace::ResolvePlayerIndex(block, other);
                 itemType = *reinterpret_cast<const int*>((uintptr_t)block + 0x128);
-                if (itemType >= 0 && itemType != 8)
+                if (itemType == 8)
+                    tenCoinState = *reinterpret_cast<void**>((uintptr_t)block + 0x118);
+                else if (itemType >= 0)
                     singleItemState = *reinterpret_cast<void**>((uintptr_t)block + 0x120);
             }
         }
@@ -1912,16 +1916,71 @@ HOOK_DEFINE_TRAMPOLINE(Patch0028BlockBrick2DCoin) {
         if (IsPtr8((uintptr_t)singleItemState) && IsPtr8((uintptr_t)other)) {
             *reinterpret_cast<void**>((uintptr_t)singleItemState + 0x28) = other;
             repaired = true;
+        } else if (IsPtr8((uintptr_t)tenCoinState) && IsPtr8((uintptr_t)other)) {
+            *reinterpret_cast<void**>((uintptr_t)tenCoinState + 0x30) = other;
+            repaired = true;
         }
 
-        const bool credited = itemType == 1;
+        const bool credited = itemType == 0 || itemType == 8;
         if (credited)
-            coinrace::Credit(idx, 1, "brick2d");
+            coinrace::Credit(idx, 1, itemType == 8 ? "brick2d-ten" : "brick2d");
 
         static unsigned logged = 0;
         if (logged < 24) {
             ++logged;
             Logging.Log("[OCoop] PATCH-0028 BlockBrick2D accepted idx=%d itemType=%d state=%p attackerRepaired=%d coinCredit=%d",
+                        idx, itemType, singleItemState,
+                        repaired ? 1 : 0, credited ? 1 : 0);
+        }
+        return accepted;
+    }
+};
+
+HOOK_DEFINE_TRAMPOLINE(Patch0028BlockQuestion2DCoin) {
+    static bool Callback(void* block, const void* message,
+                         void* other, void* selfSensor) {
+        bool isPlayerUpperPunch = false;
+        int idx = -1;
+        int itemType = -1;
+        void* singleItemState = nullptr;
+        void* tenCoinState = nullptr;
+
+        if (IsPtr8((uintptr_t)block) && IsPtr8((uintptr_t)message) &&
+            IsPtr8((uintptr_t)other)) {
+            auto isMsgPlayerUpperPunch2D =
+                OcoopFn<bool (*)(const void*)>(PatchOffsets::RsIsMsgPlayerUpperPunch2D);
+            isPlayerUpperPunch = isMsgPlayerUpperPunch2D(message);
+            if (isPlayerUpperPunch) {
+                idx = coinrace::ResolvePlayerIndex(block, other);
+                itemType = *reinterpret_cast<const int*>((uintptr_t)block + 0x110);
+                if (itemType == 8)
+                    tenCoinState = *reinterpret_cast<void**>((uintptr_t)block + 0x118);
+                else if (itemType >= 0)
+                    singleItemState = *reinterpret_cast<void**>((uintptr_t)block + 0x120);
+            }
+        }
+
+        const bool accepted = Orig(block, message, other, selfSensor);
+        if (!accepted || !isPlayerUpperPunch || idx < 0)
+            return accepted;
+
+        bool repaired = false;
+        if (IsPtr8((uintptr_t)singleItemState) && IsPtr8((uintptr_t)other)) {
+            *reinterpret_cast<void**>((uintptr_t)singleItemState + 0x28) = other;
+            repaired = true;
+        } else if (IsPtr8((uintptr_t)tenCoinState) && IsPtr8((uintptr_t)other)) {
+            *reinterpret_cast<void**>((uintptr_t)tenCoinState + 0x30) = other;
+            repaired = true;
+        }
+
+        const bool credited = itemType == 0 || itemType == 8;
+        if (credited)
+            coinrace::Credit(idx, 1, itemType == 8 ? "question2d-ten" : "question2d");
+
+        static unsigned logged = 0;
+        if (logged < 24) {
+            ++logged;
+            Logging.Log("[OCoop] PATCH-0028 BlockQuestion2D accepted idx=%d itemType=%d state=%p attackerRepaired=%d coinCredit=%d",
                         idx, itemType, singleItemState,
                         repaired ? 1 : 0, credited ? 1 : 0);
         }
@@ -3984,7 +4043,8 @@ extern "C" void exl_main(void* x0, void* x1) {
 #if PATCH_0019_ENABLED && PATCH_0014_ENABLED
 #if PATCH_0028_ENABLED
     Patch0028BlockBrick2DCoin::InstallAtOffset(PatchOffsets::BlockBrick2DReceiveMsg);
-    Logging.Log("[OCoop] PATCH-0028 installed (BlockBrick2D P1/P2 attacker provenance + exact Coin2D sidecar credit; native total untouched)");
+    Patch0028BlockQuestion2DCoin::InstallAtOffset(PatchOffsets::BlockQuestion2DReceiveMsg);
+    Logging.Log("[OCoop] PATCH-0028 installed (BlockBrick2D + BlockQuestion2D P1/P2 attribution; exact type-0 singles + one-per-accepted-hit type-8 multi; native total untouched)");
 #endif
     Patch0019DirectCoin3D::InstallAtOffset(PatchOffsets::AlSendMsgPlayerItemGet);
     Patch0019DirectCoin2D::InstallAtOffset(PatchOffsets::Coin2DReceiveMsg);

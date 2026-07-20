@@ -2,6 +2,12 @@
 
 All notable public changes will be documented here.
 
+## v0.1.0-alpha.2
+
+- Include the optional competition scoreboard directly in the normal release package.
+- Remove the planned user-side stock-file preparation workflow.
+- Verify the HUD archive hash and installation path for both Ryujinx and Atmosphere packages.
+
 ## v0.1.0-alpha.1
 
 Initial alpha release.

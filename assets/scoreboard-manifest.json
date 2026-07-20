@@ -1,15 +1,22 @@
 {
   "schema_version": 1,
-  "release": "v0.1.0-alpha.1",
-  "status": "omitted-unresolved-stock-ancestry",
+  "release": "v0.1.0-alpha.2",
+  "status": "included-direct",
   "development_artifact": {
     "path": "romfs/LayoutData/OCoopScoreBoard.szs",
     "bytes": 12980,
     "sha256": "EE828417DE626FFB2C2A861EC247223654D3784CF9D754ED04691EE9F871C4E8",
     "format": "Yaz0-compressed SARC with nested layout.lyarc SARC"
   },
+  "dependency_audit": {
+    "text_panes": 33,
+    "picture_panes": 0,
+    "used_materials": 2,
+    "used_materials_with_texture_references": 0
+  },
   "stock_input": null,
-  "redistributed": false,
+  "redistributed": true,
   "binary_patch_included": false,
-  "release_requirement": "Keep the competition HUD disabled while the asset is absent."
+  "user_preparation_required": false,
+  "release_requirement": "Package and installer must preserve the exact archive SHA-256."
 }

@@ -19,6 +19,7 @@ $BuildOutputRoot = Join-Path $ArtifactRoot "build"
 $BuildLog = Join-Path $BuildOutputRoot "build.log"
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $RunningOnWindows = ($env:OS -eq "Windows_NT")
+$ReleaseAsFlags = "-g0 -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIC -fvisibility=hidden"
 
 function Assert-ChildPath {
     param([string]$Root, [string]$Path, [string]$Label)
@@ -113,7 +114,7 @@ if ($UseDocker) {
     $mount = "type=bind,source=$RepoRoot,target=/workspace"
     Invoke-Checked -FilePath "docker" -Arguments @(
         "run", "--rm", "--mount", $mount, "--workdir", "/workspace/artifacts/build-work/exlaunch",
-        $DockerImage, "bash", "-lc", "make clean && make -j$Jobs"
+        $DockerImage, "bash", "-lc", "make clean && make -j$Jobs ASFLAGS='$ReleaseAsFlags'"
     ) -Failure "Containerized ExLaunch build failed"
     $toolchainDescription = $DockerImage
 } else {
@@ -146,7 +147,7 @@ if ($UseDocker) {
     try {
         $env:DEVKITPRO = $nativeDevkitRoot
         Invoke-Checked -FilePath "make" -Arguments @("-C", $WorkRoot, "clean") -Failure "ExLaunch clean failed"
-        Invoke-Checked -FilePath "make" -Arguments @("-C", $WorkRoot, "-j$Jobs") -Failure "ExLaunch build failed"
+        Invoke-Checked -FilePath "make" -Arguments @("-C", $WorkRoot, "-j$Jobs", "ASFLAGS=$ReleaseAsFlags") -Failure "ExLaunch build failed"
     } finally {
         $env:DEVKITPRO = $previousDevkitPro
     }

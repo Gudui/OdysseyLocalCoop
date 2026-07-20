@@ -1,4 +1,4 @@
-# Asset provenance and distribution decision
+# Asset provenance
 
 ## Competition scoreboard
 
@@ -11,11 +11,11 @@ The development build uses `OCoopScoreBoard.szs`, a custom Yaz0-compressed SARC 
 
 Development archive fingerprint: 12,980 bytes, SHA-256 `EE828417DE626FFB2C2A861EC247223654D3784CF9D754ED04691EE9F871C4E8`.
 
-The retained build tooling shows that the layout began from a stock layout and reused native picture-font/material data, but the exact original stock archive and its SHA-256 fingerprint were not retained. That makes a reproducible user-side binary patch impossible to validate at this stage.
+The retained build tooling shows that the layout began from a stock layout and reused native layout resources. A later format-aware dependency audit found that the final visible pane graph is text-only: it has 33 text panes, no picture panes, and its two used materials do not reference the bundled texture list. The coin and Moon symbols are rendered through fonts supplied by the installed game.
 
-Decision for `v0.1.0-alpha.1`: omit the competition scoreboard archive and do not publish an xdelta patch. The release profile and package must keep the competition HUD disabled when the asset is absent. Gate I will add a user-side builder after the exact Super Mario Odyssey 1.0.0 stock inputs and output hash are established; the builder will enable competition only after producing the verified archive.
+Decision for `v0.1.0-alpha.2`: distribute the complete, runtime-confirmed 12,980-byte archive directly in the normal release package. Users do not need to provide stock archives, run a patcher, or prepare assets. The package and installer verify the archive by SHA-256.
 
-This decision affects only distribution. The private development workspace keeps the existing archive for continued development and testing.
+The project code license does not grant rights to Nintendo-owned material. Super Mario Odyssey and its game resources remain copyright Nintendo. The archive is supplied only as part of this unofficial interoperability mod and requires a legally obtained installation of Super Mario Odyssey 1.0.0.
 
 ## Showcase media
 

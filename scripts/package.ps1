@@ -9,6 +9,7 @@ Set-StrictMode -Version Latest
 $RepoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
 $ProgramId = "0100000000010000"
 $ExpectedExlaunchCommit = "f698816d6e198afb0029ad5c07d55e7017a620fe"
+$ExpectedHudSha256 = "EE828417DE626FFB2C2A861EC247223654D3784CF9D754ED04691EE9F871C4E8"
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 if ([string]::IsNullOrWhiteSpace($Version)) { $Version = (Get-Content -Raw -LiteralPath (Join-Path $RepoRoot "VERSION")).Trim() }
 if ([string]::IsNullOrWhiteSpace($BuildRoot)) { $BuildRoot = Join-Path $RepoRoot "artifacts\build" }
@@ -32,8 +33,11 @@ $buildReport = Get-Content -Raw -LiteralPath $buildReportPath | ConvertFrom-Json
 if ($buildReport.status -ne "PASS" -or $buildReport.version -ne $Version -or $buildReport.exlaunch_commit -ne $ExpectedExlaunchCommit) { throw "Build report does not match the requested release." }
 
 $settingsPath = Join-Path $RepoRoot "romfs\OCoop\settings.ini"
+$hudPath = Join-Path $RepoRoot "romfs\LayoutData\OCoopScoreBoard.szs"
 $settingsText = Get-Content -Raw -LiteralPath $settingsPath
-if ($settingsText -notmatch '(?m)^competition\.coin\.enabled=0\s*$' -or $settingsText -notmatch '(?m)^competition\.moon\.enabled=0\s*$') { throw "Alpha package requires both competition modes to be disabled." }
+if (-not (Test-Path -LiteralPath $hudPath -PathType Leaf)) { throw "Missing directly bundled competition HUD: $hudPath" }
+$hudSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $hudPath).Hash
+if ($hudSha256 -ne $ExpectedHudSha256) { throw "Competition HUD hash does not match the Gate I approved archive." }
 
 New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
 $packageName = "OdysseyLocalCoop-$Version"
@@ -42,8 +46,10 @@ if (Test-Path -LiteralPath $stageRoot) { Remove-Item -LiteralPath (Assert-ChildP
 $contentRoot = Join-Path $stageRoot "payload\contents\$ProgramId"
 New-Item -ItemType Directory -Force -Path (Join-Path $contentRoot "exefs") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $contentRoot "romfs\OCoop") | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $contentRoot "romfs\LayoutData") | Out-Null
 Copy-Item -LiteralPath $subsdkPath -Destination (Join-Path $contentRoot "exefs\subsdk9")
 Copy-Item -LiteralPath $settingsPath -Destination (Join-Path $contentRoot "romfs\OCoop\settings.ini")
+Copy-Item -LiteralPath $hudPath -Destination (Join-Path $contentRoot "romfs\LayoutData\OCoopScoreBoard.szs")
 Copy-Item -LiteralPath (Join-Path $RepoRoot "scripts\install.ps1") -Destination (Join-Path $stageRoot "install.ps1")
 
 $payloadRecords = @()
@@ -58,7 +64,9 @@ $packageManifest = [ordered]@{
     primary_target = "Ryujinx"
     atmosphere_support = "experimental"
     exlaunch_commit = $ExpectedExlaunchCommit
-    competition_hud = "omitted"
+    competition_hud = "included"
+    competition_hud_sha256 = $hudSha256
+    competition_available = $true
     competition_enabled = $false
     files = $payloadRecords
 }
@@ -90,7 +98,7 @@ Write-Utf8 -Path "$zipPath.sha256" -Content "$zipHash *$([IO.Path]::GetFileName(
 $report = [ordered]@{
     schema_version = 1; status = "PASS"; version = $Version; program_id = $ProgramId
     zip = [ordered]@{ path = $zipPath; bytes = (Get-Item -LiteralPath $zipPath).Length; sha256 = $zipHash }
-    payload_files = $payloadRecords; competition_hud = "omitted"; competition_enabled = $false
+    payload_files = $payloadRecords; competition_hud = "included"; competition_hud_sha256 = $hudSha256; competition_available = $true; competition_enabled = $false
 }
 Write-Utf8 -Path (Join-Path $OutputRoot "package-report.json") -Content (($report | ConvertTo-Json -Depth 8) + "`n")
 Write-Host "Public release package: PASS"

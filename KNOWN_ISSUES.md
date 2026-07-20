@@ -1,13 +1,13 @@
 # Known issues
 
-These limitations apply to `v0.1.0-alpha.1`. They summarize currently observed behavior without exposing private investigation records.
+These limitations apply to `v0.1.0-alpha.2`. They summarize currently observed behavior without exposing private investigation records.
 
 ## Platform and setup
 
 - **Only Super Mario Odyssey 1.0.0 is supported.** Other revisions have different executable layouts and must not be used with this build.
 - **Use Odyssey's normal 1P mode.** The mod currently creates P2 whenever a second controller is available and does not follow the game's native 1P/2P lifecycle. Entering native 2P mode can make P1 control both actors or route Cappy to the wrong player. Restart in normal 1P mode to recover.
 - **Physical Switch support is experimental, but gameplay is verified.** The Cascade-to-Sand transition has completed successfully on an actual Switch after the travel fix. The remaining problem is clean public packaging: the alpha ZIP does not yet automate installation of ExLaunch's generated `main.npdm`, so an installer-only hardware setup may still fail during boot even though the corrected payload works.
-- **The competition HUD is omitted and disabled.** Enabling competition without the required layout archive is unsupported and may prevent stage loading.
+- **Competition is optional and disabled by default.** The HUD is bundled, but some scoring paths and persistence behavior remain incomplete.
 
 ## Gameplay
 
@@ -20,7 +20,7 @@ These limitations apply to `v0.1.0-alpha.1`. They summarize currently observed b
 
 ## Deferred competition work
 
-The following development defects do not affect the default alpha because competition is disabled:
+The following defects do not affect the default configuration because competition is disabled:
 
 - automatic rewards from some hidden 2D blocks do not retain reliable player attribution;
 - the custom scoreboard omits Odyssey's remaining-Moons-to-fuel cue; and

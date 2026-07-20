@@ -4,7 +4,7 @@ Odyssey Local Co-op adds a second full player actor to **Super Mario Odyssey 1.0
 
 [![Mario and the green second player together in the Sand Kingdom](media/odyssey-local-coop.png)](https://vimeo.com/1211084414/41139bee79?share=copy&fl=sv&fe=ci)
 
-_[Watch the 95-second gameplay showcase on Vimeo.](https://vimeo.com/1211084414/41139bee79?share=copy&fl=sv&fe=ci) The footage is from a development build; the competition scoreboard visible in the corner is not included in this alpha._
+_[Watch the 95-second gameplay showcase on Vimeo.](https://vimeo.com/1211084414/41139bee79?share=copy&fl=sv&fe=ci)_
 
 This is an early alpha. Save backups are recommended, game behavior outside the tested paths may differ from vanilla, and several important limitations are documented in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
@@ -26,15 +26,16 @@ This is an early alpha. Save backups are recommended, game behavior outside the 
 - Both players can hold a capture at the same time in tested scenarios.
 - Caps return to the player who threw them in tested paths.
 - Separate health tracking and a dedicated life display for P2.
+- An optional combined coin and Moon competition scoreboard with separate P1 and P2 scores and configurable targets.
 
-The competition scoreboard is not included in this alpha. Its layout contains Nintendo-derived resources whose exact stock ancestry still needs to be established. Competition settings therefore ship disabled.
+The competition HUD is included in the normal release ZIP and requires no separate download, stock-file extraction, or asset-building step. Coin and Moon competition remain disabled by default because several scoring edge cases are still listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
 ## Requirements
 
 - A legally obtained copy of Super Mario Odyssey **version 1.0.0**.
 - A current Ryujinx-compatible installation with the game already configured.
 - Two controllers configured as separate players before entering a stage.
-- The `OdysseyLocalCoop-v0.1.0-alpha.1.zip` release package.
+- The `OdysseyLocalCoop-v0.1.0-alpha.2.zip` release package.
 
 Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; this mod supplies the second full player actor itself.
 
@@ -44,7 +45,7 @@ Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; 
 2. Verify the archive hash:
 
    ```powershell
-   Get-FileHash .\OdysseyLocalCoop-v0.1.0-alpha.1.zip -Algorithm SHA256
+   Get-FileHash .\OdysseyLocalCoop-v0.1.0-alpha.2.zip -Algorithm SHA256
    ```
 
 3. Extract the ZIP and inspect `install.ps1` if desired.
@@ -75,7 +76,7 @@ Close Ryujinx before editing it. Settings are reloaded when a new `StageScene` i
 - `player.p2.body` and `player.p2.cap` select game-provided costume archive names.
 - `respawn.delay_seconds` controls the delayed recovery interval.
 - `bubble.*` controls recovery distance, hold time, and cooldown.
-- `competition.*` must remain disabled in this alpha. Enabling it without the omitted scoreboard archive may prevent a stage from loading.
+- `competition.coin.enabled` and `competition.moon.enabled` turn the bundled scoreboard modes on independently. Their target values and screen offset are configurable through the adjacent `competition.*` settings.
 
 ## Troubleshooting
 
@@ -89,8 +90,8 @@ Close Ryujinx before editing it. Settings are reloaded when a new `StageScene` i
 
 ### A stage crashes while loading
 
-- Confirm both competition settings remain `0`.
-- Remove any unofficial or older `OCoopScoreBoard.szs` left by a development build.
+- Reinstall the release package so `OCoopScoreBoard.szs` and `subsdk9` come from the same release.
+- Temporarily disable both competition settings to determine whether the optional scoreboard path is involved.
 - Test with other mods disabled.
 - Include the Ryujinx log and exact reproduction steps in a bug report. Search the log for `[OCoop]` lines, but remove personal paths or unrelated data before posting it.
 

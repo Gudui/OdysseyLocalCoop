@@ -26,4 +26,4 @@ The costume/model resource-loading approach was informed by [Super Mario Odyssey
 
 ## Nintendo game data
 
-No Super Mario Odyssey executable, dump, keys, or stock game archive is distributed. The competition scoreboard developed privately contains Nintendo-derived layout resources. Because an exact stock base archive and hash have not been established, neither that archive nor a binary patch for it is included in the alpha release. See [ASSET_PROVENANCE.md](ASSET_PROVENANCE.md).
+No Super Mario Odyssey executable, dump, keys, firmware, save data, or complete stock game archive is distributed. The custom competition HUD includes a small derivative layout archive used by the mod. The GPL license covers the project-authored source code and does not grant rights to Nintendo-owned material. Super Mario Odyssey and its game resources remain copyright Nintendo. See [ASSET_PROVENANCE.md](ASSET_PROVENANCE.md).
