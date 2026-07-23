@@ -32,7 +32,7 @@ jobs:
       - name: Upload verified package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: OdysseyLocalCoop-v0.1.0-alpha.2
+          name: OdysseyLocalCoop-v0.1.0-alpha.3
           path: |
             artifacts/package/*.zip
             artifacts/package/*.sha256
