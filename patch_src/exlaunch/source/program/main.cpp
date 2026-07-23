@@ -22,6 +22,7 @@
 /* NSO .text offsets for Odyssey 1.0.0, from OdysseyDecomp data/file_list.yml.
  * Ghidra VA = NSO offset + 0x7100000000. */
 namespace PatchOffsets {
+    constexpr ptrdiff_t AlIsInWater = 0x9576e8;  // al::isInWater(const al::LiveActor*); file_list.yml + Ghidra 20260722-205650
     /* PATCH-0024: exact change-world scene boundary. file_list.yml identifies
      * DemoChangeWorldScene::exeTalk at 0x4a7070. Ghidra run
      * 20260717-093857 proves the entry instruction is
@@ -94,18 +95,30 @@ namespace PatchOffsets {
     constexpr ptrdiff_t RecoveryStartRecovery = 0x460f0c;             // PlayerRecoverySafetyPoint::startRecovery(f32) — spawns/animates the TractorBubble; destination read later, so override the safety point here
     constexpr ptrdiff_t RecoveryGetSafetyPoint = 0x460d48;            // PlayerRecoverySafetyPoint::getSafetyPoint() const -> const Vector3f& (returns mDefaultSafetyPos if set!)
     constexpr ptrdiff_t PlayerStateAbyssAppear = 0x466b54;            // PlayerStateAbyss::appear() — abyss-fall trigger; reads isValid() to pick Recovery(bubble) vs Fall(death)
+    constexpr ptrdiff_t AlSetNerve = 0x959af4;                        // al::setNerve(al::IUseNerve*, const al::Nerve*) — Matching/file_list.yml
     constexpr ptrdiff_t RecoveryDeadExeRecovery = 0x479884;           // PlayerStateRecoveryDead::exeRecovery() — reads getSafetyPoint at first step, hard-places at it at the end; state+0x18=actor, state+0x20=PlayerRecoverySafetyPoint* (Ghidra 20260709-221256)
     constexpr ptrdiff_t RecoveryDeadExeFall = 0x47a25c;               // PlayerStateRecoveryDead::exeFall() — ends the state ONLY via vtable+0x28 when rs::isOnGround; file_list.yml + Ghidra 20260714-180854
+    constexpr ptrdiff_t RecoveryDeadExitStepReturn = 0x47a200;        // LR after BL al::isGreaterEqualStep @ 0x47a1fc in exeRecovery; Ghidra 20260720-233521
     constexpr ptrdiff_t AlSetTrans = 0x8ee364;                        // al::setTrans(al::LiveActor*, const sead::Vector3f&) — file_list.yml
     constexpr ptrdiff_t AlIsGreaterEqualStep = 0x959c24;              // al::isGreaterEqualStep(const al::IUseNerve*, int) — file_list.yml; exeRecovery itself calls it on the state
+    constexpr ptrdiff_t PlayerActorHakoniwaGetPlayerCollision = 0x42241c; // PlayerActorHakoniwa::getPlayerCollision() const — returns actor+0x170; file_list.yml + Ghidra 20260721-182023
+    constexpr ptrdiff_t RsIsOnGround = 0x568788;                     // rs::isOnGround(const al::LiveActor*, const IUsePlayerCollision*) — per-player ground/velocity test; Ghidra 20260721-182002
+    constexpr ptrdiff_t AlIsExistActorCollider = 0x8d7da4;           // al::isExistActorCollider(const al::LiveActor*) — file_list.yml Matching
+    constexpr ptrdiff_t AlIsOnGround = 0x8d8074;                     // al::isOnGround(const al::LiveActor*, u32) — file_list.yml Matching; call only after collider exists
     constexpr ptrdiff_t DimensionKeeperValidate = 0x54168c;           // ActorDimensionKeeper::validate() — file_list.yml + Matching decomp (sets mIsValid; control's driver 0x420b58 never validates, only invalidates)
 
     /* Partner lookup + pose helpers (all Matching, verified vs file_list.yml). */
     constexpr ptrdiff_t AlGetPlayerActor = 0x9a3f70;                  // al::getPlayerActor(const al::LiveActor*, s32) -> al::LiveActor* (walks actor->getSceneInfo()->playerHolder; live, no caching)
+    constexpr ptrdiff_t PlayerHolderTryGetPlayer = 0x9a3df4;          // al::PlayerHolder::tryGetPlayer(s32) const — Matching, 56-byte entry; shared scoped selector
     constexpr ptrdiff_t AlGetTrans = 0x8ee66c;                        // al::getTrans(const al::LiveActor*) -> const sead::Vector3f& (returns &vec3 in x0)
     constexpr ptrdiff_t AlGetGravity = 0x8ee64c;                      // al::getGravity(const al::LiveActor*) -> const sead::Vector3f&
+    constexpr ptrdiff_t AlGetVelocity = 0x8e2a34;                     // al::getVelocity(const al::LiveActor*) -> const sead::Vector3f&; file_list.yml Matching
+    constexpr ptrdiff_t PlayerFunctionIsPlayerHitPointOne = 0x447bdc; // PlayerFunction::isPlayerHitPointOne(const al::LiveActor*) - file_list.yml + Ghidra caller analysis 20260719
     constexpr ptrdiff_t CameraPoserFollowLimitCalcDistanceRaw = 0x0c8b9c; // CameraPoserFollowLimit::calcDistanceRaw() const; Ghidra 20260709-215339, direct distance producer
     constexpr ptrdiff_t CameraPoserFollowLimitCalcCameraPose = 0x0caa60; // CameraPoserFollowLimit::calcCameraPose(sead::LookAtCamera*) const; Ghidra 20260709-224232, final LookAtCamera output consumer
+    constexpr ptrdiff_t CameraPoserGetFovyDegree = 0x833030;          // al::CameraPoser::getFovyDegree() const; file_list.yml + Ghidra 20260723-205653
+    constexpr ptrdiff_t AlGetClippingRadius = 0x8d729c;               // al::getClippingRadius(const al::LiveActor*); file_list.yml + Ghidra 20260723-205807
+    constexpr ptrdiff_t AlGetClippingCenterPos = 0x8d7370;            // al::getClippingCenterPos(const al::LiveActor*); file_list.yml + Ghidra 20260723-205913
 
      
     constexpr ptrdiff_t ActorCameraTargetCalcTrans = 0x971fd8;        // al::ActorCameraTarget::calcTrans(sead::Vector3f* out) const — Matching; out = trackedActor world pos + offsets
@@ -118,8 +131,12 @@ namespace PatchOffsets {
      
     constexpr ptrdiff_t PlayerHakoniwaControl = 0x420630;             // PlayerActorHakoniwa::control() — per-frame per-player hook site (file_list.yml)
     constexpr ptrdiff_t PlayerForceRecoveryHelper = 0x4273f4;         // unnamed(player, hackCap, carryKeeper, bindKeeper, equipUser, stateAbyss) — prepareRecovery + setNerve(NrvAbyss); no HP cost
+    constexpr ptrdiff_t ForceRecoveryCliffReturn = 0x4273ec;          // LR after checkDeathArea BL sub_4273f4 @ 0x4273e8; fresh Ghidra 20260720-102845
+    constexpr ptrdiff_t P1DirectDeadSetNervePreCall = 0x427380;       // str w20,[x8,#0x18] immediately before BL al::setNerve @ 0x427384; x0=actor, x1=NrvAbyss; Ghidra 20260720-134150
+    constexpr ptrdiff_t NrvPlayerActorHakoniwaDamage = 0x1d789b0;     // .data Nerve object selected by ordinary damage in executePreMovementNerveChange; Ghidra 20260720-091442
     constexpr ptrdiff_t NrvPlayerActorHakoniwaAbyss = 0x1d789f0;      // .data Nerve object passed to al::setNerve by checkDeathArea + 0x4273f4 (Ghidra decomp)
     constexpr ptrdiff_t PlayerFunctionIsPlayerDeadStatus = 0x447c18;  // PlayerFunction::isPlayerDeadStatus(const al::LiveActor*) — file_list.yml
+    constexpr ptrdiff_t CameraStopJudgeIsStop = 0x839cac;             // al::CameraStopJudge::isStop() const - file_list.yml Matching + Ghidra 20260720-182129
     constexpr ptrdiff_t PlayerStateDamageLifeExeDead = 0x469e10;     // PlayerStateDamageLife::exeDead() — file_list.yml + Ghidra 20260710-235537
     constexpr ptrdiff_t PlayerAnimatorIsAnimEnd = 0x42a630;          // PlayerAnimator::isAnimEnd() const — file_list.yml
     constexpr ptrdiff_t AlIsNerve = 0x959c58;                         // al::isNerve(const al::IUseNerve*, const al::Nerve*) — file_list.yml; checkDeathArea passes the player actor directly
@@ -135,7 +152,6 @@ namespace PatchOffsets {
     constexpr ptrdiff_t GameDataRecoveryPlayerMaxForSystem = 0x5287e0; // GameDataFunction::recoveryPlayerMaxForSystem(const GameDataHolder*)
     constexpr ptrdiff_t GameDataGetLifeMaxUpItem = 0x528630;         // GameDataFunction::getLifeMaxUpItem(const al::LiveActor*) — sole semantic max-up acquisition funnel; file_list.yml + Ghidra 20260712-213429
     constexpr ptrdiff_t StageSceneStateMissCheckMiss = 0x4e3594;     // StageSceneStateMiss::checkMiss() const — sole global miss selector; Ghidra 20260712-211024
-
      
     constexpr ptrdiff_t StageSceneLayoutCtor = 0x20c570;
     constexpr ptrdiff_t StageSceneLayoutStart = 0x20ca20;
@@ -222,6 +238,7 @@ namespace PatchOffsets {
      
     constexpr ptrdiff_t DoorWarpStageChangeReceiveMsg = 0x2629f4;     // DoorWarpStageChange::receiveMsg(SensorMsg*, other, self) — file_list.yml
     constexpr ptrdiff_t DoorWarpReceiveMsg = 0x260bd4;                // DoorWarp::receiveMsg — same gate shape, controller also at +0x108
+    constexpr ptrdiff_t PictureStageChangeReceiveMsg = 0x2dfda0;      // PictureStageChange::receiveMsg — file_list.yml + Ghidra 20260722-213217
     constexpr ptrdiff_t AlIsMsgBindStart = 0x8f965c;                  // al::isMsgBindStart(const al::SensorMsg*) — file_list.yml
     constexpr ptrdiff_t AlIsMsgBindInit = 0x8f96e4;                   // al::isMsgBindInit(const al::SensorMsg*) — file_list.yml
     constexpr ptrdiff_t AlGetSensorHost = 0x8f1ec0;                   // al::getSensorHost(const al::HitSensor*) -> LiveActor* — file_list.yml
@@ -257,6 +274,11 @@ namespace PatchOffsets {
      
     constexpr ptrdiff_t PlayerHakoniwaStartDemoPuppetable = 0x421b84;  // PlayerActorHakoniwa::startDemoPuppetable() — file_list.yml; vcall-only (0 BL callers)
     constexpr ptrdiff_t PlayerHakoniwaEndDemoPuppetable = 0x421e2c;    // PlayerActorHakoniwa::endDemoPuppetable() — file_list.yml; vcall-only (0 BL callers)
+
+    /* PATCH-0039: KillerStateHack::receiveMsgHackStart. file_list.yml verifies
+     * NSO 0x149740; Ghidra run 20260720-200252 proves the single owner slot at
+     * state+0x20; runtime logging confirmed the live P2->P1 overwrite there. */
+    constexpr ptrdiff_t KillerStateHackReceiveMsgHackStart = 0x149740;
 
     /* PATCH-0013 (cap returns to its owner; Ghidra runs 20260712-104312 /
      * -104354 / -104703, chain re-derived at instruction level in run
@@ -383,6 +405,11 @@ namespace PatchOffsets {
  
 #define PATCH_0012_ENABLED 1
 
+/* PATCH-0039: refuse a second StartHack while a Bullet Bill already has an
+ * owner. This prevents the target-side last-owner overwrite before a second
+ * per-player keeper can be started. */
+#define PATCH_0039_ENABLED 1
+
  
 #define PATCH_0013_ENABLED 1
 
@@ -448,6 +475,14 @@ namespace PatchOffsets {
 
  
 #define PATCH_0017_ENABLED 1
+
+/* PATCH-0047: PictureStageChange binds the touching player but hardcodes index
+ * 0 in its receiveMsg-side position, on-actor, and ground queries. Route those
+ * nested lookups to the actual sender for the dynamic extent of receiveMsg.
+ * This reuses PATCH-0017's proven scoped selector at the shared
+ * PlayerHolder::tryGetPlayer producer used by both actor and position helpers.
+ * Disable for a one-line A/B. */
+#define PATCH_0047_ENABLED 1
 #define PATCH_0016_FALL_TIMEOUT_FRAMES 120
 /* v3: the to-3D direction CYCLES instead of stalling (run 20-22-39: three
  * startRecovery fires ~4 s apart in ONE Abyss episode): the 2D-form player
@@ -462,6 +497,78 @@ namespace PatchOffsets {
  * internal conversion invariant. The countdown starts only after the native
  * PlayerStateDamageLife death animation completes. */
 #define PATCH_0010_ENABLED 1
+
+/* PATCH-0033: redirect the terminal cliff route before Abyss can appear and
+ * execute its inner Recovery state. The hook is caller-specific so PATCH-0010's
+ * later delayed-respawn call to the same helper retains native recovery. */
+#define PATCH_0033_ENABLED 1
+
+/* PATCH-0034: P1's native zero-health cliff branch bypasses the helper used by
+ * PATCH-0033 and queues NrvAbyss directly. Replace only that direct terminal
+ * P1 selector with the same native Damage nerve. */
+#define PATCH_0034_ENABLED 1
+
+/* PATCH-0035: P1's native death lifecycle clears its recorded 3D safety point.
+ * At the delayed-respawn boundary, seed that native recovery object from the
+ * still-live partner before asking isValid(), then let PATCH-0003 keep tracking
+ * the partner through the ordinary recovery state. */
+#define PATCH_0035_ENABLED 1
+
+/* PATCH-0038: hand the shared camera target fully to surviving P2 when P1 is
+ * terminal, and slightly before the death-area boundary when one-heart P1 is
+ * genuinely falling away below P2 along local gravity. The same experiment
+ * retains PATCH-0037's proven pose-liveness prerequisite, but supersedes that
+ * standalone patch after its exact-build visual disproof. */
+#define PATCH_0038_ENABLED 1
+constexpr float PATCH_0038_FALL_BELOW_PARTNER = 300.0f;
+constexpr float PATCH_0038_FALL_SPEED = 1.0f;
+
+/* PATCH-0040: extend PATCH-0038's proven early-fall target handoff to every P1
+ * health state. Health does not identify an abyss fall; the existing
+ * gravity-relative separation and downward-speed gates remain the bounded
+ * signal. Disabling this switch restores PATCH-0038's confirmed one-heart
+ * behavior exactly. */
+#define PATCH_0040_ENABLED 1
+
+/* PATCH-0041: keep PATCH-0038/0040's surviving-P2 camera ownership through
+ * P1's complete native NrvAbyss recovery. Matching PlayerStateAbyss source and
+ * Ghidra recovery-exit analysis from 20260714 proves that the outer actor nerve
+ * remains Abyss through bubble travel and recovery fall, then ends only after
+ * landing. Disabling this switch restores PATCH-0040 exactly. */
+#define PATCH_0041_ENABLED 1
+
+/* PATCH-0042: mirror the confirmed P1 fall/recovery camera policy for P2.
+ * While P1 remains live, exclude falling, terminal, or outer-NrvAbyss P2 from
+ * midpoint and zoom production by retaining ActorCameraTarget's stock complete
+ * P1 output and feeding zero separation to PATCH-0008. The same shared fall
+ * gates and landing-state boundary apply; disabling restores PATCH-0041. */
+#define PATCH_0042_ENABLED 1
+
+/* PATCH-0046: require Odyssey's live PlayerColliderHakoniwa to report no
+ * reachable ground before PATCH-0040/0042 may perform an early cliff-camera
+ * handoff. Runtime comparison proved the false lower-platform episode had
+ * isAboveGround=1 at the decision frame while the real abyss had
+ * isAboveGround=0. Invalid collider state fails closed; native terminal/Abyss
+ * camera handling remains unchanged. */
+#define PATCH_0046_ENABLED 1
+
+/* PATCH-0043: do not start PATCH-0006's distance bubble unless the destination
+ * partner is currently grounded and not controlling another actor. Disabling
+ * this switch restores PATCH-0006's exact trigger behavior. */
+#define PATCH_0043_ENABLED 1
+
+/* PATCH-0044: hold PlayerStateRecoveryDead's final bubble-pop transition while
+ * its live destination partner is airborne or controlling another actor. The
+ * step-helper trampoline is restricted to exeRecovery's unique LR 0x47a200. */
+#define PATCH_0044_ENABLED 1
+
+/* PATCH-0045: arm camera exclusion at PATCH-0006's exact forced-distance
+ * bubble producer. P2's outer NrvAbyss does not become visible until late in
+ * bubble travel. v2 gives an armed P2 bubble priority over PATCH-0040's P1-fall
+ * handoff. v3 begins that priority at PATCH-0043's capture/rocket hold, before
+ * rocket-exit motion can start interpolation toward the idle player, and carries
+ * it through FIRE and the confirmed outer-Abyss exit boundary. */
+#define PATCH_0045_ENABLED 1
 
  
 #define PATCH_0018_ENABLED 1
@@ -570,6 +677,177 @@ template <typename T>
 static T OcoopFn(ptrdiff_t nso) {
     return reinterpret_cast<T>(exl::util::modules::GetTargetOffset(nso));
 }
+
+#if PATCH_0046_ENABLED
+namespace cliffcamera {
+/* PlayerActorHakoniwa::getPlayerCollision proves actor+0x170 is the concrete
+ * PlayerColliderHakoniwa*. Ghidra run 20260722-162927 proves +0x40 is the
+ * collision-authored isAboveGround result. Require a valid live chain and
+ * explicit no-ground result; ambiguity must not remove a player from camera. */
+static bool HasNoReachableGround(const void* actor) {
+    const uintptr_t actorAddr = (uintptr_t)actor;
+    if (!IsPtr8(actorAddr))
+        return false;
+    const uintptr_t collider = *(const uintptr_t*)(actorAddr + 0x170);
+    if (!IsPtr8(collider))
+        return false;
+    return !*(const bool*)(collider + 0x40);
+}
+}  // namespace cliffcamera
+#endif
+
+#if PATCH_0043_ENABLED || PATCH_0044_ENABLED
+namespace bubblesafety {
+struct DestinationState {
+    bool valid;
+    bool dead;
+    bool abyss;
+    bool keeperValid;
+    bool captured;
+    bool colliderValid;
+    bool grounded;
+    bool inWater;
+
+    bool IsSafe() const {
+        return valid && !dead && !abyss && keeperValid && colliderValid &&
+               (grounded ||
+                (ocoop::config::Get().bubbleWaterCountsAsGround && inWater));
+    }
+};
+
+/* The hidden player actor can retain stale collision state during capture, so
+ * captured destinations use the controlled LiveActor at PlayerHackKeeper+0x68.
+ * The 20260722 capture-ground runtime comparison proves the guarded generic
+ * collider predicate distinguishes a landed frog from an airborne rocket.
+ * Uncaptured players retain their player-specific collision authority below. */
+static DestinationState Evaluate(const void* partner) {
+    DestinationState out = {};
+    const uintptr_t player = (uintptr_t)partner;
+    if (!IsPtr8(player))
+        return out;
+
+    out.valid = true;
+    auto isDeadStatus = OcoopFn<bool (*)(const void*)>(
+        PatchOffsets::PlayerFunctionIsPlayerDeadStatus);
+    auto isNerve = OcoopFn<bool (*)(const void*, const void*)>(
+        PatchOffsets::AlIsNerve);
+    const void* nrvAbyss = (const void*)exl::util::modules::GetTargetOffset(
+        PatchOffsets::NrvPlayerActorHakoniwaAbyss);
+    out.dead = isDeadStatus(partner);
+    out.abyss = isNerve(partner, nrvAbyss);
+    if (out.dead || out.abyss)
+        return out;
+
+    const uintptr_t keeper = *(uintptr_t*)(player + 0x208);
+    out.keeperValid = IsPtr8(keeper);
+    if (!out.keeperValid)
+        return out;
+    out.captured = *(uintptr_t*)(keeper + 0x70) != 0;
+    if (out.captured) {
+        const uintptr_t controlledActor = *(uintptr_t*)(keeper + 0x68);
+        if (!IsPtr8(controlledActor))
+            return out;
+
+        auto isExistActorCollider = OcoopFn<bool (*)(const void*)>(
+            PatchOffsets::AlIsExistActorCollider);
+        out.colliderValid =
+            isExistActorCollider((const void*)controlledActor);
+        if (!out.colliderValid)
+            return out;
+
+        auto isOnGround = OcoopFn<bool (*)(const void*, unsigned)>(
+            PatchOffsets::AlIsOnGround);
+        out.grounded = isOnGround((const void*)controlledActor, 0);
+        auto isInWater = OcoopFn<bool (*)(const void*)>(
+            PatchOffsets::AlIsInWater);
+        out.inWater = isInWater((const void*)controlledActor);
+        return out;
+    }
+
+    /* PlayerActorHakoniwa does not use LiveActor::getCollider() as its normal
+     * ground authority (P2 commonly returns null there while standing). Use
+     * the actor's own IUsePlayerCollision interface instead: the getter is the
+     * proven +0x170 field accessor, and rs::isOnGround is Odyssey's native
+     * player-specific ground/velocity predicate. */
+    auto getPlayerCollision = OcoopFn<void* (*)(const void*)>(
+        PatchOffsets::PlayerActorHakoniwaGetPlayerCollision);
+    void* playerCollision = getPlayerCollision(partner);
+    out.colliderValid = IsPtr8((uintptr_t)playerCollision);
+    if (!out.colliderValid)
+        return out;
+
+    auto isOnGround = OcoopFn<bool (*)(const void*, const void*)>(
+        PatchOffsets::RsIsOnGround);
+    out.grounded = isOnGround(partner, playerCollision);
+    return out;
+}
+}  // namespace bubblesafety
+#endif
+
+#if PATCH_0045_ENABLED
+namespace distancebubblecamera {
+/* Indices, not actor pointers, survive between callbacks. The holder is
+ * resolved live by each producer; StageScene init resets any interrupted
+ * episode before a new holder can reuse these slots. */
+static bool sActive[2] = {false, false};
+static bool sCapturePending[2] = {false, false};
+static bool sSawAbyss[2] = {false, false};
+
+static void ResetAll() {
+    sActive[0] = sActive[1] = false;
+    sCapturePending[0] = sCapturePending[1] = false;
+    sSawAbyss[0] = sSawAbyss[1] = false;
+}
+
+static void BeginCapturePending(int playerIdx) {
+    if (playerIdx < 0 || playerIdx >= 2 || sActive[playerIdx] ||
+        sCapturePending[playerIdx])
+        return;
+    sCapturePending[playerIdx] = true;
+    Logging.Log("[OCoop] PATCH-0045 capture-pending camera priority begin idx=%d",
+                playerIdx);
+}
+
+static void CancelCapturePending(int playerIdx) {
+    if (playerIdx < 0 || playerIdx >= 2 || !sCapturePending[playerIdx])
+        return;
+    sCapturePending[playerIdx] = false;
+    Logging.Log("[OCoop] PATCH-0045 capture-pending camera priority cancelled idx=%d",
+                playerIdx);
+}
+
+static void Arm(int playerIdx) {
+    if (playerIdx < 0 || playerIdx >= 2)
+        return;
+    sCapturePending[playerIdx] = false;
+    sActive[playerIdx] = true;
+    sSawAbyss[playerIdx] = false;
+    Logging.Log("[OCoop] PATCH-0045 forced-distance camera hold armed idx=%d",
+                playerIdx);
+}
+
+/* Return true for the current callback even on the exit edge so that the
+ * first non-Abyss frame is still survivor-owned. The following callback
+ * resumes normal midpoint/zoom production. */
+static bool Update(int playerIdx, bool isAbyss) {
+    if (playerIdx < 0 || playerIdx >= 2)
+        return false;
+    if (sCapturePending[playerIdx])
+        return true;
+    if (!sActive[playerIdx])
+        return false;
+    if (isAbyss) {
+        sSawAbyss[playerIdx] = true;
+    } else if (sSawAbyss[playerIdx]) {
+        sActive[playerIdx] = false;
+        sSawAbyss[playerIdx] = false;
+        Logging.Log("[OCoop] PATCH-0045 forced-distance camera hold released after Abyss exit idx=%d",
+                    playerIdx);
+    }
+    return true;
+}
+}  // namespace distancebubblecamera
+#endif
 
 #if PATCH_0014_ENABLED
 /* Scene-owned, fixed-corner P2 CounterLife. This is intentionally event-driven:
@@ -2337,6 +2615,9 @@ namespace patch0008 {
             sAppliedFactor = 1.0f;
         else if (sAppliedFactor > settings.cameraMaxZoom)
             sAppliedFactor = settings.cameraMaxZoom;
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_073.inc"
+#endif
 
         float dx = eye[0] - at[0];
         float dy = eye[1] - at[1];
@@ -2466,6 +2747,52 @@ namespace patch0009 {
         return getPlayerActor(actor, 0) == actor;
     }
 
+#if PATCH_0035_ENABLED && PATCH_0003_ENABLED
+    static bool SeedP1DelayedRecoverySafety(void* actor, void* recovery) {
+        if (!sP1Terminal || !IsP1(actor) || !IsPtr8((uintptr_t)recovery))
+            return false;
+
+        auto getPlayerActor =
+            OcoopFn<void* (*)(const void*, int)>(PatchOffsets::AlGetPlayerActor);
+        void* partner = nullptr;
+        for (int i = 0; i < 4; i++) {
+            void* candidate = getPlayerActor((const void*)actor, i);
+            if (!IsPtr8((uintptr_t)candidate) || candidate == actor)
+                continue;
+            if (IsP2(candidate) && sP2Terminal)
+                continue;
+            partner = candidate;
+            break;
+        }
+        if (!IsPtr8((uintptr_t)partner)) {
+            Logging.Log("[OCoop] PATCH-0035 p1 delayed recovery seed pending: no live partner actor=%p",
+                        actor);
+            return false;
+        }
+
+        auto getTrans =
+            OcoopFn<const float* (*)(const void*)>(PatchOffsets::AlGetTrans);
+        auto getGravity =
+            OcoopFn<const float* (*)(const void*)>(PatchOffsets::AlGetGravity);
+        const float* pos = getTrans(partner);
+        const float* grav = getGravity((const void*)actor);
+        if (pos == nullptr || grav == nullptr)
+            return false;
+
+        float up[3] = {-grav[0], -grav[1], -grav[2]};
+        float dst[3] = {pos[0] + up[0] * PATCH_0003_POP_UP_OFFSET,
+                        pos[1] + up[1] * PATCH_0003_POP_UP_OFFSET,
+                        pos[2] + up[2] * PATCH_0003_POP_UP_OFFSET};
+        auto setSafetyPoint =
+            OcoopFn<void (*)(void*, const void*, const void*, const void*)>(
+                PatchOffsets::RecoverySetSafetyPoint);
+        setSafetyPoint(recovery, dst, up, nullptr);
+        Logging.Log("[OCoop] PATCH-0035 p1 delayed recovery safety seeded actor=%p partner=%p pos=(%.1f,%.1f,%.1f)",
+                    actor, partner, pos[0], pos[1], pos[2]);
+        return true;
+    }
+#endif
+
 #if PATCH_0018_ENABLED
     static bool IsP2AtLastPrivateHeart(void* actor) {
         return sP2HealthValid && !sP2Terminal && sP2Health == 1 &&
@@ -2487,9 +2814,16 @@ namespace patch0009 {
 
         uintptr_t recovery = *(uintptr_t*)(player + 0x270);
         auto recoveryIsValid = OcoopFn<bool (*)(void*)>(PatchOffsets::RecoveryIsValid);
-        if (!IsPtr8(recovery) || !recoveryIsValid((void*)recovery)) {
-            Logging.Log("[OCoop] PATCH-0009 p2 recovery skip reason=%s recovery=%p",
-                        reason, (void*)recovery);
+        bool recoveryValid = IsPtr8(recovery) && recoveryIsValid((void*)recovery);
+#if PATCH_0035_ENABLED && PATCH_0003_ENABLED
+        if (!recoveryValid && restoreGlobalHealth &&
+            SeedP1DelayedRecoverySafety(actor, (void*)recovery)) {
+            recoveryValid = recoveryIsValid((void*)recovery);
+        }
+#endif
+        if (!recoveryValid) {
+            Logging.Log("[OCoop] PATCH-0010 p%d recovery skip reason=%s recovery=%p",
+                        IsP2(actor) ? 2 : 1, reason, (void*)recovery);
             return false;
         }
 
@@ -2758,6 +3092,9 @@ HOOK_DEFINE_INLINE(Patch0001CaptureInitInfo) {
          * settings must therefore load here; the later layout reload makes HUD
          * placement consume the same file for the new scene. */
         ocoop::config::Reload();
+#if PATCH_0045_ENABLED
+        distancebubblecamera::ResetAll();
+#endif
         patch0001::sCaptureValid = false;
         uintptr_t aii = ctx->X[1];
         uintptr_t pii = ctx->X[2];
@@ -3077,6 +3414,76 @@ HOOK_DEFINE_TRAMPOLINE(Patch0003ReassertDestination) {
 };
 #endif
 
+#if PATCH_0044_ENABLED
+/* PlayerStateRecoveryDead::exeRecovery calls al::isGreaterEqualStep exactly
+ * once at 0x47a1fc, then immediately performs the native bubble pop and moves
+ * to NrvFall. Return false only to that caller while the live partner is not a
+ * safe destination. Other callers and no-partner/terminal-team cases remain
+ * stock so this gate cannot create a permanent solo or both-down recovery. */
+HOOK_DEFINE_TRAMPOLINE(Patch0044HoldBubblePopForSafePartner) {
+    static bool Callback(const void* state, int step) {
+        const uintptr_t base =
+            (uintptr_t)exl::util::modules::GetTargetOffset(0);
+        const uintptr_t lr = (uintptr_t)__builtin_return_address(0);
+        const uintptr_t callerNso = lr >= base ? lr - base : 0;
+        const bool stock = Orig(state, step);
+        if (!stock || callerNso !=
+                          (uintptr_t)PatchOffsets::RecoveryDeadExitStepReturn)
+            return stock;
+
+        const uintptr_t st = (uintptr_t)state;
+        if (!IsPtr8(st))
+            return true;
+        const uintptr_t actor = *(uintptr_t*)(st + 0x18);
+        if (!IsPtr8(actor))
+            return true;
+
+        auto getPlayerActor = OcoopFn<void* (*)(const void*, int)>(
+            PatchOffsets::AlGetPlayerActor);
+        int selfIdx = -1;
+        void* partner = nullptr;
+        for (int i = 0; i < 4; i++) {
+            void* p = getPlayerActor((const void*)actor, i);
+            if (!IsPtr8((uintptr_t)p))
+                continue;
+            if ((uintptr_t)p == actor)
+                selfIdx = i;
+            else if (partner == nullptr)
+                partner = p;
+        }
+        if (selfIdx < 0 || selfIdx >= 4 || !IsPtr8((uintptr_t)partner))
+            return true;
+
+        static bool sHolding[4] = {false, false, false, false};
+        const bubblesafety::DestinationState destination =
+            bubblesafety::Evaluate(partner);
+        /* A terminal/Abyss partner belongs to the existing miss/respawn
+         * lifecycle. Fail open there instead of holding both players forever. */
+        if (destination.dead || destination.abyss) {
+            sHolding[selfIdx] = false;
+            return true;
+        }
+        if (!destination.IsSafe()) {
+            if (!sHolding[selfIdx]) {
+                sHolding[selfIdx] = true;
+                Logging.Log("[OCoop] PATCH-0044 pop HELD idx=%d partner=%p ground=%d capture=%d keeper=%d collider=%d",
+                            selfIdx, partner, destination.grounded ? 1 : 0,
+                            destination.captured ? 1 : 0,
+                            destination.keeperValid ? 1 : 0,
+                            destination.colliderValid ? 1 : 0);
+            }
+            return false;
+        }
+        if (sHolding[selfIdx]) {
+            sHolding[selfIdx] = false;
+            Logging.Log("[OCoop] PATCH-0044 pop RELEASE idx=%d partner=%p ground=1 capture=0",
+                        selfIdx, partner);
+        }
+        return true;
+    }
+};
+#endif
+
 #if PATCH_0016_ENABLED
  
 HOOK_DEFINE_TRAMPOLINE(Patch0016ForceLandIn2D) {
@@ -3167,13 +3574,64 @@ namespace patch0017 {
 static int sQueryIdx = -1;
 }
 
-HOOK_DEFINE_TRAMPOLINE(Patch0017GetPlayerActorRedirect) {
-    static void* Callback(const void* actor, int idx) {
+HOOK_DEFINE_TRAMPOLINE(Patch0017TryGetPlayerRedirect) {
+    static void* Callback(const void* holder, int idx) {
         if (idx == 0 && patch0017::sQueryIdx > 0)
             idx = patch0017::sQueryIdx;
-        return Orig(actor, idx);
+        return Orig(holder, idx);
     }
 };
+
+#if PATCH_0047_ENABLED
+HOOK_DEFINE_TRAMPOLINE(Patch0047PictureReceiveMsg) {
+    static unsigned long Callback(void* self, void* msg, void* other, void* target) {
+        int idx = -1;
+        if (IsPtr8((uintptr_t)self) && IsPtr8((uintptr_t)other)) {
+            auto isSensorPlayer =
+                OcoopFn<bool (*)(const void*)>(PatchOffsets::AlIsSensorPlayer);
+            if (isSensorPlayer(other)) {
+                auto getSensorHost =
+                    OcoopFn<void* (*)(const void*)>(PatchOffsets::AlGetSensorHost);
+                void* host = getSensorHost(other);
+                if (IsPtr8((uintptr_t)host)) {
+                    auto getPlayerActor = OcoopFn<void* (*)(const void*, int)>(
+                        PatchOffsets::AlGetPlayerActor);
+                    for (int i = 0; i < 4; i++) {
+                        if (getPlayerActor(self, i) == host) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        const int prev = patch0017::sQueryIdx;
+        patch0017::sQueryIdx = idx;
+        const unsigned long ret = Orig(self, msg, other, target);
+        patch0017::sQueryIdx = prev;
+
+        const char* kind = nullptr;
+        if (idx >= 0 && IsPtr8((uintptr_t)msg)) {
+            auto isBindStart =
+                OcoopFn<bool (*)(const void*)>(PatchOffsets::AlIsMsgBindStart);
+            auto isBindInit =
+                OcoopFn<bool (*)(const void*)>(PatchOffsets::AlIsMsgBindInit);
+            if (isBindStart(msg)) kind = "BINDSTART";
+            else if (isBindInit(msg)) kind = "BINDINIT";
+        }
+        if (kind) {
+            static unsigned sLogged = 0;
+            if (sLogged < 16) {
+                sLogged++;
+                Logging.Log("[OCoop] PATCH-0047 picture %s idx=%d ret=%d self=%p",
+                            kind, idx, (int)(ret & 1), self);
+            }
+        }
+        return ret;
+    }
+};
+#endif
 
 HOOK_DEFINE_TRAMPOLINE(Patch0017DokanReceiveMsg) {
     static unsigned long Callback(void* self, void* msg, void* other, void* target) {
@@ -3286,10 +3744,263 @@ HOOK_DEFINE_TRAMPOLINE(Patch0004CoopCameraMidpoint) {
         if (tp == nullptr || pp == nullptr)
             return;
 
+#if PATCH_0038_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+        /* Exact joined PATCH-0037 evidence identifies tracked as P1 while P2
+         * survives, and proves the poser remains live after CameraStopArea is
+         * suppressed. Route the complete target to P2 during that terminal
+         * interval. Before the death-area boundary, make the same handoff for
+         * P1 falling substantially below P2 along P1's local gravity. With
+         * PATCH-0040 disabled, retain PATCH-0038's confirmed one-heart gate.
+         * PATCH-0041 keeps that P2 ownership through P1's outer NrvAbyss
+         * recovery and releases it only when the actor exits the state. */
+        const bool p1Tracked = patch0009::IsP1((void*)tracked);
+        const bool p2Live = patch0009::sP2HealthValid &&
+                            !patch0009::sP2Terminal;
+        const bool p2IsPlayer = patch0009::IsP2(partner);
+        bool p1Abyss = false;
+        bool p2Abyss = false;
+#if PATCH_0041_ENABLED || PATCH_0042_ENABLED
+        {
+            auto isNerve = OcoopFn<bool (*)(const void*, const void*)>(
+                PatchOffsets::AlIsNerve);
+            const void* nrvAbyss =
+                (const void*)exl::util::modules::GetTargetOffset(
+                    PatchOffsets::NrvPlayerActorHakoniwaAbyss);
+            p1Abyss = p1Tracked && isNerve((const void*)tracked, nrvAbyss);
+            p2Abyss = p2IsPlayer && isNerve((const void*)partner, nrvAbyss);
+        }
+#endif
+        const bool terminalHandoff = p1Tracked && p2Live &&
+                                     patch0009::sP1Terminal;
+        bool recoveryHandoff = false;
+#if PATCH_0045_ENABLED
+        const bool forcedDistanceP1 =
+            p1Tracked && p2Live && distancebubblecamera::Update(0, p1Abyss);
+        const bool forcedDistanceP2 =
+            p2IsPlayer && distancebubblecamera::Update(1, p2Abyss);
+#else
+        const bool forcedDistanceP1 = false;
+        const bool forcedDistanceP2 = false;
+#endif
+
+#if PATCH_0045_ENABLED
+        /* This priority must precede PATCH-0038/0040's P1 falling branch. The
+         * exact v1 disproof logged that branch during rocket exit, so its early
+         * return prevented the armed P2 bubble from ever reaching the later P2
+         * exclusion block. Orig already produced P1's complete target. */
+        const bool forcedDistanceP2Priority =
+            forcedDistanceP2 && p1Tracked && !patch0009::sP1Terminal &&
+            !p1Abyss;
+        static bool loggedForcedDistanceP2Priority = false;
+        if (forcedDistanceP2Priority) {
+            if (!loggedForcedDistanceP2Priority) {
+                loggedForcedDistanceP2Priority = true;
+                Logging.Log("[OCoop] PATCH-0045 P2 forced-distance camera priority keeps live P1 target begin p1=%p p2=%p",
+                            (void*)tracked, partner);
+            }
+#if PATCH_0008_ENABLED
+            patch0008::ObserveHorizontalSeparation(0.0f, 0.0f);
+#endif
+            return;
+        }
+        if (loggedForcedDistanceP2Priority) {
+            loggedForcedDistanceP2Priority = false;
+            Logging.Log("[OCoop] PATCH-0045 P2 forced-distance camera priority released p1=%p p2=%p",
+                        (void*)tracked, partner);
+        }
+#endif
+#if PATCH_0041_ENABLED
+        recoveryHandoff = p1Tracked && p2Live &&
+                          (p1Abyss || forcedDistanceP1);
+#endif
+        bool oneHeart = false;
+        bool fallingHandoff = false;
+        float belowPartner = 0.0f;
+        float fallingSpeed = 0.0f;
+        if (p1Tracked && p2Live && !patch0009::sP1Terminal) {
+            auto isHitPointOne = OcoopFn<bool (*)(const void*)>(
+                PatchOffsets::PlayerFunctionIsPlayerHitPointOne);
+            oneHeart = isHitPointOne((const void*)tracked);
+            bool fallGateEligible = oneHeart;
+#if PATCH_0040_ENABLED
+            fallGateEligible = true;
+#endif
+            if (fallGateEligible) {
+                auto getGravity = OcoopFn<const float* (*)(const void*)>(
+                    PatchOffsets::AlGetGravity);
+                auto getVelocity = OcoopFn<const float* (*)(const void*)>(
+                    PatchOffsets::AlGetVelocity);
+                const float* gravity = getGravity((const void*)tracked);
+                const float* velocity = getVelocity((const void*)tracked);
+                if (gravity != nullptr && velocity != nullptr) {
+                    belowPartner = (tp[0] - pp[0]) * gravity[0] +
+                                   (tp[1] - pp[1]) * gravity[1] +
+                                   (tp[2] - pp[2]) * gravity[2];
+                    fallingSpeed = velocity[0] * gravity[0] +
+                                   velocity[1] * gravity[1] +
+                                   velocity[2] * gravity[2];
+                    fallingHandoff =
+                        belowPartner >= PATCH_0038_FALL_BELOW_PARTNER &&
+                        fallingSpeed >= PATCH_0038_FALL_SPEED;
+#if PATCH_0046_ENABLED
+                    fallingHandoff =
+                        fallingHandoff &&
+                        cliffcamera::HasNoReachableGround((const void*)tracked);
+#endif
+                }
+            }
+        }
+
+        static bool loggedEarlyHandoff = false;
+        static bool loggedTerminalHandoff = false;
+        static bool loggedRecoveryHandoff = false;
+        if (!fallingHandoff)
+            loggedEarlyHandoff = false;
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_062.inc"
+#endif
+        if (!patch0009::sP1Terminal)
+            loggedTerminalHandoff = false;
+#if PATCH_0041_ENABLED
+        if (recoveryHandoff && !loggedRecoveryHandoff) {
+            loggedRecoveryHandoff = true;
+            Logging.Log("[OCoop] PATCH-0041 P1 Abyss recovery camera hold on live P2 begin p1=%p p2=%p",
+                        (void*)tracked, partner);
+        } else if (!recoveryHandoff && loggedRecoveryHandoff) {
+            loggedRecoveryHandoff = false;
+            Logging.Log("[OCoop] PATCH-0041 P1 Abyss recovery camera hold released after state exit p1=%p p2=%p",
+                        (void*)tracked, partner);
+        }
+#endif
+
+        if (terminalHandoff || fallingHandoff || recoveryHandoff) {
+            out[0] = pp[0];
+            out[1] = pp[1];
+            out[2] = pp[2];
+#if PATCH_0008_ENABLED
+            patch0008::ObserveHorizontalSeparation(0.0f, 0.0f);
+#endif
+            if (fallingHandoff && !loggedEarlyHandoff) {
+                loggedEarlyHandoff = true;
+#if PATCH_0040_ENABLED
+#if PATCH_0046_ENABLED
+                Logging.Log("[OCoop] PATCH-0046 native no-ground P1 cliff-camera handoff to P2 oneHeart=%d below=%.1f fallSpeed=%.1f p1=(%.0f,%.0f,%.0f) p2=(%.0f,%.0f,%.0f)",
+                            oneHeart ? 1 : 0, belowPartner, fallingSpeed,
+                            tp[0], tp[1], tp[2], pp[0], pp[1], pp[2]);
+#else
+                Logging.Log("[OCoop] PATCH-0040 health-independent P1 cliff-camera handoff to P2 oneHeart=%d below=%.1f fallSpeed=%.1f p1=(%.0f,%.0f,%.0f) p2=(%.0f,%.0f,%.0f)",
+                            oneHeart ? 1 : 0, belowPartner, fallingSpeed,
+                            tp[0], tp[1], tp[2], pp[0], pp[1], pp[2]);
+#endif
+#else
+                Logging.Log("[OCoop] PATCH-0038 early P1 cliff-camera handoff to P2 below=%.1f fallSpeed=%.1f p1=(%.0f,%.0f,%.0f) p2=(%.0f,%.0f,%.0f)",
+                            belowPartner, fallingSpeed, tp[0], tp[1], tp[2],
+                            pp[0], pp[1], pp[2]);
+#endif
+            }
+            if (terminalHandoff && !loggedTerminalHandoff) {
+                loggedTerminalHandoff = true;
+                Logging.Log("[OCoop] PATCH-0038 terminal P1 camera target handed to live P2 p1=(%.0f,%.0f,%.0f) p2=(%.0f,%.0f,%.0f)",
+                            tp[0], tp[1], tp[2], pp[0], pp[1], pp[2]);
+            }
+            return;
+        }
+
+#if PATCH_0042_ENABLED
+        /* ActorCameraTarget tracks P1, so symmetric P2 exclusion does not need
+         * to replace `out`: Orig already produced P1's complete target. Merely
+         * skip midpoint composition and remove P2 from separation/zoom while
+         * P2 is falling, terminal, or in the outer Abyss recovery state. */
+        const bool p1LiveForP2 = p1Tracked && !patch0009::sP1Terminal &&
+                                 !p1Abyss;
+        const bool p2TerminalExclusion = p1LiveForP2 && p2IsPlayer &&
+                                          patch0009::sP2Terminal;
+        const bool p2RecoveryExclusion = p1LiveForP2 && p2IsPlayer && p2Abyss;
+        bool p2FallingExclusion = false;
+        float p2BelowP1 = 0.0f;
+        float p2FallingSpeed = 0.0f;
+        if (p1LiveForP2 && p2IsPlayer && !patch0009::sP2Terminal &&
+            !p2Abyss) {
+            auto getGravity = OcoopFn<const float* (*)(const void*)>(
+                PatchOffsets::AlGetGravity);
+            auto getVelocity = OcoopFn<const float* (*)(const void*)>(
+                PatchOffsets::AlGetVelocity);
+            const float* gravity = getGravity((const void*)partner);
+            const float* velocity = getVelocity((const void*)partner);
+            if (gravity != nullptr && velocity != nullptr) {
+                p2BelowP1 = (pp[0] - tp[0]) * gravity[0] +
+                            (pp[1] - tp[1]) * gravity[1] +
+                            (pp[2] - tp[2]) * gravity[2];
+                p2FallingSpeed = velocity[0] * gravity[0] +
+                                 velocity[1] * gravity[1] +
+                                 velocity[2] * gravity[2];
+                p2FallingExclusion =
+                    p2BelowP1 >= PATCH_0038_FALL_BELOW_PARTNER &&
+                    p2FallingSpeed >= PATCH_0038_FALL_SPEED;
+#if PATCH_0046_ENABLED
+                p2FallingExclusion =
+                    p2FallingExclusion &&
+                    cliffcamera::HasNoReachableGround((const void*)partner);
+#endif
+            }
+        }
+
+        static bool loggedP2FallExclusion = false;
+        static bool loggedP2TerminalExclusion = false;
+        static bool loggedP2RecoveryExclusion = false;
+        if (!p2FallingExclusion)
+            loggedP2FallExclusion = false;
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_063.inc"
+#endif
+        if (!patch0009::sP2Terminal)
+            loggedP2TerminalExclusion = false;
+        if (p2RecoveryExclusion && !loggedP2RecoveryExclusion) {
+            loggedP2RecoveryExclusion = true;
+            Logging.Log("[OCoop] PATCH-0042 P2 Abyss recovery excluded from live-P1 camera begin p1=%p p2=%p",
+                        (void*)tracked, partner);
+        } else if (!p2RecoveryExclusion && loggedP2RecoveryExclusion) {
+            loggedP2RecoveryExclusion = false;
+            Logging.Log("[OCoop] PATCH-0042 P2 Abyss recovery camera exclusion released after state exit p1=%p p2=%p",
+                        (void*)tracked, partner);
+        }
+
+        if (p2FallingExclusion || p2TerminalExclusion || p2RecoveryExclusion) {
+#if PATCH_0008_ENABLED
+            patch0008::ObserveHorizontalSeparation(0.0f, 0.0f);
+#endif
+            if (p2FallingExclusion && !loggedP2FallExclusion) {
+                loggedP2FallExclusion = true;
+#if PATCH_0046_ENABLED
+                Logging.Log("[OCoop] PATCH-0046 native no-ground P2 excluded from live-P1 camera below=%.1f fallSpeed=%.1f p1=(%.0f,%.0f,%.0f) p2=(%.0f,%.0f,%.0f)",
+                            p2BelowP1, p2FallingSpeed, tp[0], tp[1], tp[2],
+                            pp[0], pp[1], pp[2]);
+#else
+                Logging.Log("[OCoop] PATCH-0042 P2 cliff fall excluded from live-P1 camera below=%.1f fallSpeed=%.1f p1=(%.0f,%.0f,%.0f) p2=(%.0f,%.0f,%.0f)",
+                            p2BelowP1, p2FallingSpeed, tp[0], tp[1], tp[2],
+                            pp[0], pp[1], pp[2]);
+#endif
+            }
+            if (p2TerminalExclusion && !loggedP2TerminalExclusion) {
+                loggedP2TerminalExclusion = true;
+                Logging.Log("[OCoop] PATCH-0042 terminal P2 excluded from live-P1 camera p1=%p p2=%p",
+                            (void*)tracked, partner);
+            }
+            return;
+        }
+#endif
+#endif
+
         float dx = (pp[0] - tp[0]) * 0.5f;
         float dz = (pp[2] - tp[2]) * 0.5f;
         out[0] += dx;   // x toward midpoint
         out[2] += dz;   // z toward midpoint (y left as Orig set it)
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_067.inc"
+#include "program/diagnostics_private/fragment_069.inc"
+#include "program/diagnostics_private/fragment_072.inc"
+#include "program/diagnostics_private/fragment_076.inc"
+#endif
 
 #if PATCH_0008_ENABLED
         /* Feed only scalar, current-frame separation to the final-pose hook.
@@ -3386,7 +4097,16 @@ HOOK_DEFINE_TRAMPOLINE(Patch0008CoopCameraFinalZoom) {
 
         float* eye = (float*)(out + 0x38);
         const float* at = (const float*)(out + 0x44);
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_070.inc"
+#endif
+#if OCOOP_DEV_DIAGNOSTICS
+        const float diagNativeEye[3] = {eye[0], eye[1], eye[2]};
+#endif
         patch0008::ScaleFinalPose(eye, at, self);
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_075.inc"
+#endif
     }
 };
 #endif
@@ -3488,6 +4208,9 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
 
         static unsigned sHold[4] = {0, 0, 0, 0};
         static unsigned sCooldown[4] = {0, 0, 0, 0};
+#if PATCH_0043_ENABLED
+        static bool sDestinationBlocked[4] = {false, false, false, false};
+#endif
         /* v2 movement tracking: position VALUES (not pointers) cached per
          * holder index; EMA of per-frame speed, ~1.2 s half-life. */
         static float sPrev[4][3];
@@ -3521,6 +4244,12 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
         if (isDeadStatus((const void*)player) || isDeadStatus(partner) ||
             isNerve((const void*)player, nrvAbyss) || isNerve(partner, nrvAbyss)) {
             sHold[selfIdx] = 0;
+#if PATCH_0045_ENABLED
+            distancebubblecamera::CancelCapturePending(selfIdx);
+#endif
+#if PATCH_0043_ENABLED
+            sDestinationBlocked[selfIdx] = false;
+#endif
             return;
         }
          
@@ -3566,6 +4295,12 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
 
         if (!apart) {
             sHold[selfIdx] = 0;
+#if PATCH_0045_ENABLED
+            distancebubblecamera::CancelCapturePending(selfIdx);
+#endif
+#if PATCH_0043_ENABLED
+            sDestinationBlocked[selfIdx] = false;
+#endif
             return;
         }
         /* v2 symmetric selector: the clearly-IDLE player bubbles (speed EMA
@@ -3575,14 +4310,53 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
         bool selfClearlyIdle = sSpeedEma[selfIdx] * 2.0f < sSpeedEma[partnerIdx];
         bool partnerClearlyIdle = sSpeedEma[partnerIdx] * 2.0f < sSpeedEma[selfIdx];
         bool iAmTheBubbler = (selfIdx == 0) ? selfClearlyIdle : !partnerClearlyIdle;
-        if (!iAmTheBubbler || sCooldown[selfIdx] > 0)
+        if (!iAmTheBubbler || sCooldown[selfIdx] > 0) {
+#if PATCH_0045_ENABLED
+            distancebubblecamera::CancelCapturePending(selfIdx);
+#endif
+#if PATCH_0043_ENABLED
+            sDestinationBlocked[selfIdx] = false;
+#endif
             return;
+        }
+#if PATCH_0043_ENABLED
+        const bubblesafety::DestinationState destination =
+            bubblesafety::Evaluate(partner);
+        if (!destination.IsSafe()) {
+            sHold[selfIdx] = 0;
+#if PATCH_0045_ENABLED
+            /* The confirmed disturbing shift begins during rocket exit, before
+             * FIRE. Start priority only from the unambiguous capture signal and
+             * retain it across the later airborne/grounded countdown states. */
+            if (destination.captured)
+                distancebubblecamera::BeginCapturePending(selfIdx);
+#endif
+            if (!sDestinationBlocked[selfIdx]) {
+                sDestinationBlocked[selfIdx] = true;
+                Logging.Log("[OCoop] PATCH-0043 trigger HELD idx=%d partner=%p ground=%d water=%d capture=%d keeper=%d collider=%d",
+                            selfIdx, partner, destination.grounded ? 1 : 0,
+                            destination.inWater ? 1 : 0,
+                            destination.captured ? 1 : 0,
+                            destination.keeperValid ? 1 : 0,
+                            destination.colliderValid ? 1 : 0);
+            }
+            return;
+        }
+        if (sDestinationBlocked[selfIdx]) {
+            sDestinationBlocked[selfIdx] = false;
+            Logging.Log("[OCoop] PATCH-0043 trigger gate OPEN idx=%d partner=%p",
+                        selfIdx, partner);
+        }
+#endif
         if (++sHold[selfIdx] < holdFrames)
             return;
         sHold[selfIdx] = 0;
 
          
         if (selfHack != 0) {
+#if PATCH_0045_ENABLED
+            distancebubblecamera::CancelCapturePending(selfIdx);
+#endif
             auto cancelHackArea =
                 OcoopFn<bool (*)(void*)>(PatchOffsets::PlayerHackKeeperCancelHackArea);
             bool ok = IsPtr8(hackKeeper) ? cancelHackArea((void*)hackKeeper) : false;
@@ -3597,6 +4371,9 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
          * player instead of bubbling. */
         uintptr_t recovery = *(uintptr_t*)(player + 0x270);
         if (!IsPtr8(recovery) || !recoveryIsValid((void*)recovery)) {
+#if PATCH_0045_ENABLED
+            distancebubblecamera::CancelCapturePending(selfIdx);
+#endif
             Logging.Log("[OCoop] PATCH-0006 skip: recovery not valid (recovery=%p)", (void*)recovery);
             sCooldown[selfIdx] = cooldownFrames;
             return;
@@ -3609,6 +4386,9 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
         uintptr_t stateAbyss = *(uintptr_t*)(player + 0x3b8);
         if (!IsPtr8(hackCap) || !IsPtr8(bindKeeper) || !IsPtr8(carryKeeper) ||
             !IsPtr8(equipUser) || !IsPtr8(stateAbyss)) {
+#if PATCH_0045_ENABLED
+            distancebubblecamera::CancelCapturePending(selfIdx);
+#endif
             Logging.Log("[OCoop] PATCH-0006 skip: bad player fields cap=%p bind=%p carry=%p equip=%p abyss=%p",
                         (void*)hackCap, (void*)bindKeeper, (void*)carryKeeper,
                         (void*)equipUser, (void*)stateAbyss);
@@ -3621,6 +4401,9 @@ HOOK_DEFINE_TRAMPOLINE(Patch0006OutOfViewBubble) {
         Logging.Log("[OCoop] PATCH-0006 FIRE idx=%d dist=%.0f emaSelf=%.1f emaPartner=%.1f player=%p partner=%p",
                     selfIdx, __builtin_sqrtf(dist2), sSpeedEma[selfIdx], sSpeedEma[partnerIdx],
                     (void*)player, partner);
+#if PATCH_0045_ENABLED
+        distancebubblecamera::Arm(selfIdx);
+#endif
         forceRecovery((void*)player, (void*)hackCap, (void*)carryKeeper,
                       (void*)bindKeeper, (void*)equipUser, (void*)stateAbyss);
         sCooldown[selfIdx] = cooldownFrames;
@@ -3682,6 +4465,41 @@ HOOK_DEFINE_TRAMPOLINE(Patch0009P2Dead) {
 };
 #endif
 
+#if PATCH_0038_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+/* Ghidra 20260720-182129/183454: CameraStopJudge::isStop returns true for
+ * CameraStopArea (+0x08) or death-stop (+0x09), except invalid-demo (+0x0a)
+ * forces false. CameraPoseUpdater::exeActive enters Stop on true, and exeStop
+ * remains there while true. PATCH-0037 proved suppressing the observed tuple
+ * keeps poser output live but does not retarget it. PATCH-0038 retains this
+ * prerequisite while its calcTrans route supplies surviving P2 as subject. */
+HOOK_DEFINE_TRAMPOLINE(Patch0038P1SurvivorCameraStopArea) {
+    static bool Callback(const void* self) {
+        const bool stock = Orig(self);
+        static bool loggedThisEpisode = false;
+        if (!patch0009::sP1Terminal) {
+            loggedThisEpisode = false;
+            return stock;
+        }
+        if (!stock || !patch0009::sP2HealthValid ||
+            patch0009::sP2Terminal || !IsPtr8((uintptr_t)self))
+            return stock;
+
+        const unsigned char* judge = (const unsigned char*)self;
+        const bool inArea = judge[8] != 0;
+        const bool deathStop = judge[9] != 0;
+        const bool invalidDemo = judge[10] != 0;
+        if (!inArea || deathStop || invalidDemo)
+            return stock;
+
+        if (!loggedThisEpisode) {
+            loggedThisEpisode = true;
+            Logging.Log("[OCoop] PATCH-0038 p1 terminal CameraStopArea suppressed for live-P2 target handoff");
+        }
+        return false;
+    }
+};
+#endif
+
 #if PATCH_0010_ENABLED
 /* Static evidence (Ghidra 20260710-234848): the stock helper resolves player
  * index 0 even when its actor argument is P2. Override only the P2 terminal
@@ -3692,7 +4510,8 @@ HOOK_DEFINE_TRAMPOLINE(Patch0010P2DeadStatus) {
         if (patch0009::IsP2((void*)actor))
             return patch0009::sP2Terminal;
         bool stock = Orig(actor);
-        if (stock && patch0009::IsP1((void*)actor))
+        bool p1 = stock && patch0009::IsP1((void*)actor);
+        if (p1)
             patch0009::BeginP1Terminal((void*)actor, "native-dead-status");
         return stock;
     }
@@ -3716,6 +4535,60 @@ HOOK_DEFINE_TRAMPOLINE(Patch0010P2DamageLifeDead) {
         }
         patch0009::NoteDeadState(state, animationEnded);
         Orig(state);
+    }
+};
+#endif
+
+#if PATCH_0033_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+/* Fresh Ghidra 20260720-102845: checkDeathArea calls sub_4273f4 at 0x4273e8.
+ * Orig performs cap/bind/carry/equipment cleanup, prepareRecovery, and finally
+ * queues NrvAbyss. Preserve all cleanup, then replace only that terminal P2
+ * caller's queued nerve with the verified native Damage nerve. Other native
+ * callers and PATCH-0010's subsdk delayed-respawn call retain Orig unchanged. */
+HOOK_DEFINE_TRAMPOLINE(Patch0033P2TerminalForceRecoveryToDamage) {
+    static void Callback(void* actor, void* hackCap, void* carryKeeper,
+                         void* bindKeeper, void* equipUser, void* stateAbyss) {
+        const uintptr_t base =
+            (uintptr_t)exl::util::modules::GetTargetOffset(0);
+        const uintptr_t lr = (uintptr_t)__builtin_return_address(0);
+        const uintptr_t callerNso = lr >= base ? lr - base : 0;
+
+        Orig(actor, hackCap, carryKeeper, bindKeeper, equipUser, stateAbyss);
+
+        if (callerNso != (uintptr_t)PatchOffsets::ForceRecoveryCliffReturn ||
+            !patch0009::sP2Terminal || !patch0009::IsP2(actor))
+            return;
+
+        auto setNerve = OcoopFn<void (*)(void*, const void*)>(PatchOffsets::AlSetNerve);
+        const void* damageNerve = (const void*)exl::util::modules::GetTargetOffset(
+            PatchOffsets::NrvPlayerActorHakoniwaDamage);
+        setNerve(actor, damageNerve);
+        Logging.Log("[OCoop] PATCH-0033 p2 terminal producer Abyss->Damage caller_nso=0x%lx actor=%p hp=%d",
+                    (unsigned long)callerNso, actor, patch0009::sP2Health);
+    }
+};
+#endif
+
+#if PATCH_0034_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+/* Fresh Ghidra listing 20260720-134150: after PlayerDamageKeeper::dead at
+ * 0x427330, checkDeathArea prepares x1=NrvAbyss, x0=actor, executes the safe
+ * non-PC-relative str at 0x427380, then BL al::setNerve at 0x427384. The hook
+ * runs before the str; changing x1 survives that instruction into the BL. This
+ * site is reached only by the direct terminal-death branch, so no health-sidecar
+ * gate is needed and all P2/helper recovery behavior remains separate. */
+HOOK_DEFINE_INLINE(Patch0034P1DirectDeadToDamage) {
+    static void Callback(exl::hook::InlineCtx* ctx) {
+        void* actor = (void*)ctx->X[0];
+        if (!patch0009::IsP1(actor))
+            return;
+
+        const uintptr_t abyssNerve = ctx->X[1];
+        const uintptr_t damageNerve =
+            (uintptr_t)exl::util::modules::GetTargetOffset(
+                PatchOffsets::NrvPlayerActorHakoniwaDamage);
+        ctx->X[1] = damageNerve;
+        Logging.Log("[OCoop] PATCH-0034 p1 direct-dead producer Abyss->Damage actor=%p nerve=%p->%p",
+                    actor, (void*)abyssNerve, (void*)damageNerve);
     }
 };
 #endif
@@ -3863,6 +4736,30 @@ HOOK_DEFINE_TRAMPOLINE(Patch0011P2AreaChangeStage) {
                         p2, (int)*(char*)(h + 0x49));
         }
         return ret;
+    }
+};
+#endif
+
+#if PATCH_0039_ENABLED
+HOOK_DEFINE_TRAMPOLINE(Patch0039RejectOccupiedKillerCapture) {
+    static bool Callback(void* state, const void* message, void* other,
+                         void* selfSensor) {
+        const uintptr_t stateAddr = (uintptr_t)state;
+        if (IsPtr8(stateAddr)) {
+            const uintptr_t owner = *(const uintptr_t*)(stateAddr + 0x20);
+            if (owner != 0) {
+                static unsigned logged = 0;
+                if (logged < 16) {
+                    ++logged;
+                    const uintptr_t target =
+                        *(const uintptr_t*)(stateAddr + 0x18);
+                    Logging.Log("[OCoop] PATCH-0039 reject occupied Bullet Bill state=%p target=%p owner=%p other=%p",
+                                state, (void*)target, (void*)owner, other);
+                }
+                return false;
+            }
+        }
+        return Orig(state, message, other, selfSensor);
     }
 };
 #endif
@@ -4030,6 +4927,11 @@ extern "C" void exl_main(void* x0, void* x1) {
     Patch0003ReassertDestination::InstallAtOffset(PatchOffsets::RecoveryDeadExeRecovery);
     Logging.Log("[OCoop] PATCH-0003 installed (recover-to-partner @ 0x460f0c + v2 re-assert @ 0x479884)");
 #endif
+#if PATCH_0044_ENABLED
+    Patch0044HoldBubblePopForSafePartner::InstallAtOffset(
+        PatchOffsets::AlIsGreaterEqualStep);
+    Logging.Log("[OCoop] PATCH-0044 installed (hold recovery pop until live partner grounded/unhacked; caller LR 0x47a200)");
+#endif
 #if PATCH_0016_ENABLED
     Patch0016ForceLandIn2D::InstallAtOffset(PatchOffsets::RecoveryDeadExeFall);
     Logging.Log("[OCoop] PATCH-0016 v3 installed (cross-dimension bubble force-land, to2D=%d / to3D=%d fall frames)",
@@ -4037,8 +4939,14 @@ extern "C" void exl_main(void* x0, void* x1) {
 #endif
 #if PATCH_0017_ENABLED
     Patch0017DokanReceiveMsg::InstallAtOffset(PatchOffsets::DokanReceiveMsg);
-    Patch0017GetPlayerActorRedirect::InstallAtOffset(PatchOffsets::AlGetPlayerActor);
-    Logging.Log("[OCoop] PATCH-0017 v2 installed (2D valve P2 enter/exit; dokan receiveMsg scope + getPlayerActor redirect)");
+    Patch0017TryGetPlayerRedirect::InstallAtOffset(
+        PatchOffsets::PlayerHolderTryGetPlayer);
+    Logging.Log("[OCoop] PATCH-0017 v3 installed (2D valve P2 enter/exit; receiveMsg scope + shared PlayerHolder::tryGetPlayer redirect)");
+#if PATCH_0047_ENABLED
+    Patch0047PictureReceiveMsg::InstallAtOffset(
+        PatchOffsets::PictureStageChangeReceiveMsg);
+    Logging.Log("[OCoop] PATCH-0047 v2 installed (painting sender selector; shared tryGetPlayer redirect during receiveMsg)");
+#endif
 #endif
 #if PATCH_0019_ENABLED && PATCH_0014_ENABLED
 #if PATCH_0028_ENABLED
@@ -4098,6 +5006,9 @@ extern "C" void exl_main(void* x0, void* x1) {
     Patch0006OutOfViewBubble::InstallAtOffset(PatchOffsets::PlayerHakoniwaControl);
     Logging.Log("[OCoop] PATCH-0006 installed (out-of-view bubble via control @ 0x420630, dist=%.0f)",
                 (double)ocoop::config::Get().bubbleDistance);
+#if PATCH_0043_ENABLED
+    Logging.Log("[OCoop] PATCH-0043 v5 armed (controlled actor ground/water selector)");
+#endif
 #if OCOOP_DEV_DIAGNOSTICS
 #include "program/diagnostics_private/fragment_049.inc"
 #endif
@@ -4136,6 +5047,47 @@ extern "C" void exl_main(void* x0, void* x1) {
     Logging.Log("[OCoop] PATCH-0010 installed (symmetric native death + delayed respawn seconds=%.2f frames=%u)",
                 ocoop::config::Get().respawnDelaySeconds,
                 ocoop::config::RespawnDelayFrames());
+#endif
+#if PATCH_0033_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+    Patch0033P2TerminalForceRecoveryToDamage::InstallAtOffset(
+        PatchOffsets::PlayerForceRecoveryHelper);
+    Logging.Log("[OCoop] PATCH-0033 installed (P2 terminal checkDeathArea producer -> native Damage @ helper 0x4273f4)");
+#endif
+#if PATCH_0034_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+    Patch0034P1DirectDeadToDamage::InstallAtOffset(
+        PatchOffsets::P1DirectDeadSetNervePreCall);
+    Logging.Log("[OCoop] PATCH-0034 installed (P1 direct terminal cliff producer -> native Damage @ 0x427380)");
+#endif
+#if PATCH_0035_ENABLED && PATCH_0003_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+    Logging.Log("[OCoop] PATCH-0035 armed (P1 delayed recovery seeds native safety point from live P2)");
+#endif
+#if PATCH_0038_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
+    Patch0038P1SurvivorCameraStopArea::InstallAtOffset(
+        PatchOffsets::CameraStopJudgeIsStop);
+    Logging.Log("[OCoop] PATCH-0038 installed (confirmed one-heart cliff + terminal survivor camera handoff to P2)");
+#if PATCH_0040_ENABLED
+    Logging.Log("[OCoop] PATCH-0040 armed (health-independent gravity-relative P1 cliff-camera handoff to P2)");
+#endif
+#if PATCH_0041_ENABLED
+    Logging.Log("[OCoop] PATCH-0041 armed (hold P2 camera ownership through P1 native Abyss recovery landing)");
+#endif
+#if PATCH_0042_ENABLED
+    Logging.Log("[OCoop] PATCH-0042 armed (exclude P2 cliff fall, terminal delay, and Abyss recovery from live-P1 camera)");
+#endif
+#if PATCH_0046_ENABLED
+    Logging.Log("[OCoop] PATCH-0046 armed (early cliff-camera handoff requires native PlayerColliderHakoniwa no-ground state)");
+#endif
+#if PATCH_0045_ENABLED
+    Logging.Log("[OCoop] PATCH-0045 v3 armed (capture-hold through FIRE camera priority over cliff handoff)");
+#endif
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_064.inc"
+#include "program/diagnostics_private/fragment_068.inc"
+#include "program/diagnostics_private/fragment_071.inc"
+#include "program/diagnostics_private/fragment_074.inc"
+#include "program/diagnostics_private/fragment_077.inc"
+#include "program/diagnostics_private/fragment_078.inc"
+#endif
 #endif
 #if PATCH_0018_ENABLED && PATCH_0002_ENABLED && PATCH_0009_ENABLED && PATCH_0010_ENABLED
     Logging.Log("[OCoop] PATCH-0018 armed (P2 pre-movement last-heart terminal selector; zero new hooks)");
@@ -4191,6 +5143,10 @@ extern "C" void exl_main(void* x0, void* x1) {
     Patch0012DemoShieldStart::InstallAtOffset(PatchOffsets::PlayerHakoniwaStartDemoPuppetable);
     Patch0012DemoShieldEnd::InstallAtOffset(PatchOffsets::PlayerHakoniwaEndDemoPuppetable);
     Logging.Log("[OCoop] PATCH-0012 installed (capture shield @ 0x421b84/0x421e2c)");
+#endif
+#if PATCH_0039_ENABLED
+    Patch0039RejectOccupiedKillerCapture::InstallAtOffset(PatchOffsets::KillerStateHackReceiveMsgHackStart);
+    Logging.Log("[OCoop] PATCH-0039 installed (reject occupied Bullet Bill capture @ 0x149740)");
 #endif
 #if PATCH_0013_ENABLED
     Patch0013CapReturnOwner::InstallAtOffset(PatchOffsets::RsGetPlayerHeadPos);

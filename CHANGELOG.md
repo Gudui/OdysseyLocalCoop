@@ -2,6 +2,26 @@
 
 All notable public changes will be documented here.
 
+## v0.1.0-alpha.3
+
+### Resolved
+
+- P1 and P2 now complete independent native death, delayed respawn, health restoration, and partner-directed recovery on the verified ordinary and cliff/abyss paths.
+- A surviving player no longer triggers a full miss while only their partner is down.
+- The shared camera now follows the surviving player through terminal falls, the respawn delay, bubble travel, and landing for both player roles.
+- Two players can no longer claim the same capture target and corrupt its owner state.
+- Grounded captured actors can now permit distance recovery while airborne capture travel remains protected.
+
+### Improved
+
+- Cliff-camera handoff now uses Odyssey's native reachable-ground state, reducing false handoffs during lower-platform traversal.
+- Distance-bubble camera priority now begins before recovery fires, avoiding focus theft and residual interpolation during capture-assisted recovery.
+- Capture-aware recovery now handles grounded and configured in-water destinations separately from unsafe airborne captures.
+
+### Added
+
+- Added `bubble.water_counts_as_ground` to control whether a captured actor in water is a valid recovery destination.
+
 ## v0.1.0-alpha.2
 
 - Include the optional competition scoreboard directly in the normal release package.

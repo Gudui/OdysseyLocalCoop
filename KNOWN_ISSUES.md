@@ -1,6 +1,6 @@
 # Known issues
 
-These limitations apply to `v0.1.0-alpha.2`. They summarize currently observed behavior without exposing private investigation records.
+These limitations apply to `v0.1.0-alpha.3`. They summarize currently observed behavior without exposing private investigation records.
 
 ## Platform and setup
 
@@ -22,7 +22,6 @@ These limitations apply to `v0.1.0-alpha.2`. They summarize currently observed b
 
 The following defects do not affect the default configuration because competition is disabled:
 
-- automatic rewards from some hidden 2D blocks do not retain reliable player attribution;
 - the custom scoreboard omits Odyssey's remaining-Moons-to-fuel cue; and
 - sidecar persistence on physical Switch still needs stronger save-commit validation.
 

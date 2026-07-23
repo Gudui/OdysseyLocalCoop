@@ -1,26 +1,20 @@
-# v0.1.0-alpha.2 release notes
+# v0.1.0-alpha.3 release notes
 
-This follow-up alpha adds the directly bundled competition HUD to Odyssey Local Co-op's two-player same-screen experience for Super Mario Odyssey 1.0.0.
+## Resolved
 
-## Highlights
+- Independent native death, delayed respawn, health restoration, and partner-directed recovery for P1 and P2 on verified ordinary and cliff/abyss paths.
+- A full miss no longer activates while one player is still alive.
+- The shared camera no longer focuses on a dead or recovering player instead of the surviving partner.
+- Same-target capture ownership conflicts that could leave stale capture state.
+- Distance recovery being blocked by a grounded captured actor.
 
-- Separate P1 and P2 controller routing with a distinct green P2 costume.
-- Shared co-op camera with midpoint framing, adaptive zoom, and right-stick input from either player.
-- Recovery bubbles that return a separated or fallen player toward the partner.
-- Tested support for regular stage transitions, selected 2D valves, captures, and cap ownership.
-- Independent P2 health display.
-- Directly bundled optional coin and Moon competition HUD with no separate asset preparation.
-- Reproducible pinned build, deterministic ZIP, SHA-256 checksums, and a Ryujinx-first installer.
+## Improved
 
-## Important alpha limitations
+- Survivor-focused camera behavior through terminal falls, respawn delay, bubble travel, and landing.
+- Cliff-camera classification during reachable lower-platform traversal.
+- Capture-assisted distance bubbling so grounded destinations can recover while unsafe airborne captures remain protected.
+- Bubble camera priority during capture-assisted recovery to reduce focus theft and leftover interpolation.
 
-- Requires Super Mario Odyssey 1.0.0 and normal in-game 1P mode.
-- Ryujinx is the primary packaged target. Actual-Switch gameplay and Cascade-to-Sand travel are verified with the corrected Atmosphere payload; the public alpha ZIP does not yet automate installation of the generated `main.npdm` required by that hardware setup.
-- The competition scoreboard is included but remains disabled by default while known scoring and persistence gaps are worked on.
-- Terminal-death recovery, some P2 health events, event-Moon scenes, and recovery placement still have known defects. Read [KNOWN_ISSUES.md](KNOWN_ISSUES.md) before playing.
+## Added
 
-## Integrity
-
-Use the `.sha256` file published beside the release ZIP to verify the download before installation. The installer then checks each packaged file again before copying it.
-
-This release contains no game executable, keys, firmware, save data, or complete stock Nintendo archive. The bundled custom HUD layout uses resources derived from Super Mario Odyssey; Nintendo retains all rights to its game content.
+- `bubble.water_counts_as_ground` setting for treating captured actors in water as valid recovery destinations.

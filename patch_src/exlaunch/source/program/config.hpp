@@ -17,6 +17,7 @@ struct Settings {
     float bubbleDistance;
     float bubbleHoldSeconds;
     float bubbleCooldownSeconds;
+    bool bubbleWaterCountsAsGround;
 
     bool coinRaceEnabled;
     int coinRaceTarget;

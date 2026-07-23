@@ -17,7 +17,7 @@ Settings sSettings = {
     1.12f, 1.65f, 500.0f, 2500.0f, 0.05f,
     "MarioColorLuigi", "MarioColorLuigi",
     10.0f,
-    3000.0f, 1.5f, 10.0f,
+    3000.0f, 1.5f, 10.0f, true,
     true, 10, -560.0f, 260.0f, -64.0f,
     true, 3, 0.0f, 0.0f,
 };
@@ -27,7 +27,7 @@ Settings Defaults() {
         1.12f, 1.65f, 500.0f, 2500.0f, 0.05f,
         "MarioColorLuigi", "MarioColorLuigi",
         10.0f,
-        3000.0f, 1.5f, 10.0f,
+        3000.0f, 1.5f, 10.0f, true,
         true, 10, -560.0f, 260.0f, -64.0f,
         true, 3, 0.0f, 0.0f,
     };
@@ -162,6 +162,8 @@ void ParseConfigText(const char* text, size_t length, Settings* settings) {
             settings->bubbleHoldSeconds = value;
         } else if (KeyEquals(cur, keyEnd, "bubble.cooldown_seconds")) {
             settings->bubbleCooldownSeconds = value;
+        } else if (KeyEquals(cur, keyEnd, "bubble.water_counts_as_ground")) {
+            settings->bubbleWaterCountsAsGround = value != 0.0f;
         } else if (KeyEquals(cur, keyEnd, "competition.coin.enabled")) {
             settings->coinRaceEnabled = value != 0.0f;
         } else if (KeyEquals(cur, keyEnd, "competition.coin.target")) {
@@ -226,9 +228,10 @@ void LogSettings(const char* state) {
     Logging.Log("[OCoop] CONFIG-0001 %s p2 body=\"%s\" cap=\"%s\" respawn=%.2fs",
                 state, sSettings.p2Body, sSettings.p2Cap,
                 sSettings.respawnDelaySeconds);
-    Logging.Log("[OCoop] CONFIG-0001 %s bubble distance=%.0f hold=%.2fs cooldown=%.2fs path=%s",
+    Logging.Log("[OCoop] CONFIG-0001 %s bubble distance=%.0f hold=%.2fs cooldown=%.2fs water-ground=%d path=%s",
                 state, sSettings.bubbleDistance, sSettings.bubbleHoldSeconds,
-                sSettings.bubbleCooldownSeconds, kConfigPath);
+                sSettings.bubbleCooldownSeconds,
+                sSettings.bubbleWaterCountsAsGround ? 1 : 0, kConfigPath);
     Logging.Log("[OCoop] CONFIG-0001 %s competition coin=%d/%d moon=%d/%d panel=(%.0f,%.0f)",
                 state, sSettings.coinRaceEnabled ? 1 : 0, sSettings.coinRaceTarget,
                 sSettings.moonRaceEnabled ? 1 : 0, sSettings.moonRaceTarget,
