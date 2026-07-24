@@ -28,7 +28,8 @@ function Assert-ChildPath {
 
 $buildReportPath = Join-Path $BuildRoot "build-report.json"
 $subsdkPath = Join-Path $BuildRoot "subsdk9"
-foreach ($path in @($buildReportPath, $subsdkPath)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Build first; missing $path" } }
+$npdmPath = Join-Path $BuildRoot "main.npdm"
+foreach ($path in @($buildReportPath, $subsdkPath, $npdmPath)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Build first; missing $path" } }
 $buildReport = Get-Content -Raw -LiteralPath $buildReportPath | ConvertFrom-Json
 if ($buildReport.status -ne "PASS" -or $buildReport.version -ne $Version -or $buildReport.exlaunch_commit -ne $ExpectedExlaunchCommit) { throw "Build report does not match the requested release." }
 
@@ -48,6 +49,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $contentRoot "exefs") | Out
 New-Item -ItemType Directory -Force -Path (Join-Path $contentRoot "romfs\OCoop") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $contentRoot "romfs\LayoutData") | Out-Null
 Copy-Item -LiteralPath $subsdkPath -Destination (Join-Path $contentRoot "exefs\subsdk9")
+Copy-Item -LiteralPath $npdmPath -Destination (Join-Path $contentRoot "exefs\main.npdm")
 Copy-Item -LiteralPath $settingsPath -Destination (Join-Path $contentRoot "romfs\OCoop\settings.ini")
 Copy-Item -LiteralPath $hudPath -Destination (Join-Path $contentRoot "romfs\LayoutData\OCoopScoreBoard.szs")
 Copy-Item -LiteralPath (Join-Path $RepoRoot "scripts\install.ps1") -Destination (Join-Path $stageRoot "install.ps1")

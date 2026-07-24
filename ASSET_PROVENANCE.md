@@ -13,7 +13,7 @@ Development archive fingerprint: 12,980 bytes, SHA-256 `EE828417DE626FFB2C2A861E
 
 The retained build tooling shows that the layout began from a stock layout and reused native layout resources. A later format-aware dependency audit found that the final visible pane graph is text-only: it has 33 text panes, no picture panes, and its two used materials do not reference the bundled texture list. The coin and Moon symbols are rendered through fonts supplied by the installed game.
 
-Decision for `v0.1.0-alpha.3`: distribute the complete, runtime-confirmed 12,980-byte archive directly in the normal release package. Users do not need to provide stock archives, run a patcher, or prepare assets. The package and installer verify the archive by SHA-256.
+Decision for `v0.1.0-alpha.4`: distribute the complete, runtime-confirmed 12,980-byte archive directly in the normal release package. Users do not need to provide stock archives, run a patcher, or prepare assets. The package and installer verify the archive by SHA-256.
 
 The project code license does not grant rights to Nintendo-owned material. Super Mario Odyssey and its game resources remain copyright Nintendo. The archive is supplied only as part of this unofficial interoperability mod and requires a legally obtained installation of Super Mario Odyssey 1.0.0.
 

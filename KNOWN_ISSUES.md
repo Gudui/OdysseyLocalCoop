@@ -1,12 +1,12 @@
 # Known issues
 
-These limitations apply to `v0.1.0-alpha.3`. They summarize currently observed behavior without exposing private investigation records.
+These limitations apply to `v0.1.0-alpha.4`. They summarize currently observed behavior without exposing private investigation records.
 
 ## Platform and setup
 
 - **Only Super Mario Odyssey 1.0.0 is supported.** Other revisions have different executable layouts and must not be used with this build.
 - **Use Odyssey's normal 1P mode.** The mod currently creates P2 whenever a second controller is available and does not follow the game's native 1P/2P lifecycle. Entering native 2P mode can make P1 control both actors or route Cappy to the wrong player. Restart in normal 1P mode to recover.
-- **Physical Switch support is experimental, but gameplay is verified.** The Cascade-to-Sand transition has completed successfully on an actual Switch after the travel fix. The remaining problem is clean public packaging: the alpha ZIP does not yet automate installation of ExLaunch's generated `main.npdm`, so an installer-only hardware setup may still fail during boot even though the corrected payload works.
+- **Physical Switch support remains experimental.** The package now installs ExLaunch's generated `main.npdm`, and Cascade-to-Sand travel has completed successfully on actual hardware, but broader hardware coverage is still limited.
 - **Competition is optional and disabled by default.** The HUD is bundled, but some scoring paths and persistence behavior remain incomplete.
 
 ## Gameplay

@@ -21,10 +21,13 @@ $Utf8NoBom = New-Object Text.UTF8Encoding($false)
 $buildReport = Get-Content -Raw -LiteralPath (Join-Path $BuildRoot "build-report.json") | ConvertFrom-Json
 if ($buildReport.status -ne "PASS" -or $buildReport.version -ne $ExpectedVersion -or $buildReport.program_id -ne $ProgramId -or $buildReport.exlaunch_commit -ne $ExpectedCommit -or -not $buildReport.clean_build) { throw "Build report failed release identity checks." }
 $subsdk = Join-Path $BuildRoot "subsdk9"
+$npdm = Join-Path $BuildRoot "main.npdm"
 $elf = Join-Path $BuildRoot "exlaunch.elf"
-foreach ($path in @($subsdk, $elf)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing build output: $path" } }
+foreach ($path in @($subsdk, $npdm, $elf)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing build output: $path" } }
 $reportedSubsdk = @($buildReport.outputs | Where-Object { $_.path -eq "artifacts/build/subsdk9" })
 if ($reportedSubsdk.Count -ne 1 -or (Get-FileHash -Algorithm SHA256 -LiteralPath $subsdk).Hash -ne $reportedSubsdk[0].sha256) { throw "Built subsdk9 does not match its report." }
+$reportedNpdm = @($buildReport.outputs | Where-Object { $_.path -eq "artifacts/build/main.npdm" })
+if ($reportedNpdm.Count -ne 1 -or (Get-FileHash -Algorithm SHA256 -LiteralPath $npdm).Hash -ne $reportedNpdm[0].sha256) { throw "Built main.npdm does not match its report." }
 
 $workflowText = Get-Content -Raw -LiteralPath (Join-Path $RepoRoot ".github\workflows\build.yml")
 $buildScriptText = Get-Content -Raw -LiteralPath (Join-Path $RepoRoot "scripts\build.ps1")
@@ -87,6 +90,8 @@ if (Test-Path -LiteralPath $installRoot) { Remove-Item -LiteralPath $installRoot
 foreach ($target in @("ryujinx", "atmosphere")) {
     $installedSubsdk = Join-Path $installRoot "$target\contents\$ProgramId\exefs\subsdk9"
     if ((Get-FileHash -Algorithm SHA256 -LiteralPath $installedSubsdk).Hash -ne (Get-FileHash -Algorithm SHA256 -LiteralPath $subsdk).Hash) { throw "$target installer test produced the wrong subsdk9." }
+    $installedNpdm = Join-Path $installRoot "$target\contents\$ProgramId\exefs\main.npdm"
+    if (-not (Test-Path -LiteralPath $installedNpdm -PathType Leaf) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $installedNpdm).Hash -ne (Get-FileHash -Algorithm SHA256 -LiteralPath $npdm).Hash) { throw "$target installer test produced the wrong main.npdm." }
     $installedHud = Join-Path $installRoot "$target\contents\$ProgramId\romfs\LayoutData\OCoopScoreBoard.szs"
     if (-not (Test-Path -LiteralPath $installedHud -PathType Leaf) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $installedHud).Hash -ne $ExpectedHudSha256) { throw "$target installer test produced the wrong competition HUD." }
 }

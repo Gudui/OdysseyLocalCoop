@@ -60,6 +60,15 @@ namespace PatchOffsets {
     constexpr ptrdiff_t RsIsSeparatePlay = 0x575af4;                  // rs::isSeparatePlay(const al::IUseSceneObjHolder*)
     constexpr ptrdiff_t RsChangeSeparatePlayMode = 0x575b18;          // rs::changeSeparatePlayMode()
     constexpr ptrdiff_t IsSeparatePlaySingleJoy = 0x44fe3c;           // PlayerInputFunction::isSeparatePlaySingleJoy(const al::LiveActor*, s32)
+
+    /* Scene-UI input family (Ghidra runs 20260724-200445/200614/200720/200758).
+     * Every one of these
+     * branches on GameDataHolder+0x245: main controller only when clear, both
+     * player ports when set. rs::tryOpenMap 0x4d2bb4 gates the map transition
+     * solely on RsIsTriggerMapOpen. */
+    constexpr ptrdiff_t RsIsTriggerMapOpen = 0x576a04;                // rs::isTriggerMapOpen(const al::IUseSceneObjHolder*) — file_list.yml, size 168
+    constexpr ptrdiff_t AlIsPadTriggerMinus = 0x85d26c;               // al::isPadTriggerMinus(s32 port) — file_list.yml; NO bounds check, caller guards port >= 0
+    constexpr ptrdiff_t AlIsPadTriggerUp = 0x85c8d8;                  // al::isPadTriggerUp(s32 port) — file_list.yml; NO bounds check
     /* Input aggregation root cause (Ghidra run 20260709-202240, PATCH-0005):
      * changeSinglePlayMode sets NpadController[port(0)]+0x178 = -1 = "index
      * controller mode -1" = the FIRST Npad controller aggregates input from ANY
@@ -4905,6 +4914,7 @@ HOOK_DEFINE_TRAMPOLINE(Patch0013CapReturnOwner) {
 
 #if OCOOP_DEV_DIAGNOSTICS
 #include "program/diagnostics_private/fragment_043.inc"
+#include "program/diagnostics_private/fragment_079.inc"
 #endif
 
 extern "C" void exl_main(void* x0, void* x1) {
@@ -4912,6 +4922,10 @@ extern "C" void exl_main(void* x0, void* x1) {
     exl::patch::impl::InitPatcherImpl();
     ocoop::diagnostics::Initialize();
     Logging.Log("[OCoop] init (OCoopMod, target 0100000000010000 v1.0.0)");
+
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_080.inc"
+#endif
 
 #if PATCH_0001_ENABLED
     Patch0001CaptureInitInfo::InstallAtOffset(PatchOffsets::P1InitPlayerVCall);

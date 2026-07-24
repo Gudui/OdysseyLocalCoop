@@ -2,6 +2,12 @@
 
 All notable public changes will be documented here.
 
+## v0.1.0-alpha.4
+
+### Resolved
+
+- The release package now includes and verifies ExLaunch's generated `main.npdm` beside `subsdk9`, fixing incomplete installer-only Atmosphere deployments.
+
 ## v0.1.0-alpha.3
 
 ### Resolved

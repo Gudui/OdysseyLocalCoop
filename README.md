@@ -14,7 +14,7 @@ This is an early alpha. Save backups are recommended, game behavior outside the 
 |---|---|---|
 | Super Mario Odyssey | **1.0.0 only** | Other game versions are unsupported. |
 | Ryujinx | Primary target | The alpha build, installer, and gameplay work are tested here. |
-| Atmosphere / physical Switch | Experimental | Gameplay has been tested on actual hardware with a corrected payload. The public alpha ZIP does not yet automate installation of the required `main.npdm` metadata. |
+| Atmosphere / physical Switch | Experimental | The package includes the required generated `main.npdm`; gameplay and Cascade-to-Sand travel have been tested on actual hardware. |
 
 ## What the mod adds
 
@@ -35,7 +35,7 @@ The competition HUD is included in the normal release ZIP and requires no separa
 - A legally obtained copy of Super Mario Odyssey **version 1.0.0**.
 - A current Ryujinx-compatible installation with the game already configured.
 - Two controllers configured as separate players before entering a stage.
-- The `OdysseyLocalCoop-v0.1.0-alpha.3.zip` release package.
+- The `OdysseyLocalCoop-v0.1.0-alpha.4.zip` release package.
 
 Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; this mod supplies the second full player actor itself.
 
@@ -45,7 +45,7 @@ Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; 
 2. Verify the archive hash:
 
    ```powershell
-   Get-FileHash .\OdysseyLocalCoop-v0.1.0-alpha.3.zip -Algorithm SHA256
+   Get-FileHash .\OdysseyLocalCoop-v0.1.0-alpha.4.zip -Algorithm SHA256
    ```
 
 3. Extract the ZIP and inspect `install.ps1` if desired.

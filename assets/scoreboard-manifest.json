@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "release": "v0.1.0-alpha.3",
+  "release": "v0.1.0-alpha.4",
   "status": "included-direct",
   "development_artifact": {
     "path": "romfs/LayoutData/OCoopScoreBoard.szs",

@@ -155,14 +155,17 @@ if ($UseDocker) {
 }
 
 $builtSubsdk = Join-Path $WorkRoot "deploy\subsdk9"
+$builtNpdm = Join-Path $WorkRoot "deploy\main.npdm"
 $builtElf = Join-Path $WorkRoot "exlaunch.elf"
-foreach ($requiredOutput in @($builtSubsdk, $builtElf)) {
+foreach ($requiredOutput in @($builtSubsdk, $builtNpdm, $builtElf)) {
     if (-not (Test-Path -LiteralPath $requiredOutput -PathType Leaf)) { throw "Expected build output is missing: $requiredOutput" }
 }
 Copy-Item -LiteralPath $builtSubsdk -Destination (Join-Path $BuildOutputRoot "subsdk9") -Force
+Copy-Item -LiteralPath $builtNpdm -Destination (Join-Path $BuildOutputRoot "main.npdm") -Force
 Copy-Item -LiteralPath $builtElf -Destination (Join-Path $BuildOutputRoot "exlaunch.elf") -Force
 
 $subsdk = Get-Item -LiteralPath (Join-Path $BuildOutputRoot "subsdk9")
+$npdm = Get-Item -LiteralPath (Join-Path $BuildOutputRoot "main.npdm")
 $elf = Get-Item -LiteralPath (Join-Path $BuildOutputRoot "exlaunch.elf")
 $report = [ordered]@{
     schema_version = 1
@@ -176,6 +179,7 @@ $report = [ordered]@{
     clean_build = $true
     outputs = @(
         [ordered]@{ path = "artifacts/build/subsdk9"; bytes = $subsdk.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $subsdk.FullName).Hash },
+        [ordered]@{ path = "artifacts/build/main.npdm"; bytes = $npdm.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $npdm.FullName).Hash },
         [ordered]@{ path = "artifacts/build/exlaunch.elf"; bytes = $elf.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $elf.FullName).Hash }
     )
 }
@@ -183,3 +187,4 @@ Write-Json -Path (Join-Path $BuildOutputRoot "build-report.json") -Value $report
 Write-Host "Public release build: PASS"
 Write-Host "ExLaunch: $PinnedExlaunchCommit"
 Write-Host "subsdk9: $($subsdk.Length) bytes, $((Get-FileHash -Algorithm SHA256 -LiteralPath $subsdk.FullName).Hash)"
+Write-Host "main.npdm: $($npdm.Length) bytes, $((Get-FileHash -Algorithm SHA256 -LiteralPath $npdm.FullName).Hash)"
