@@ -2,6 +2,19 @@
 
 All notable public changes will be documented here.
 
+## v0.1.0-alpha.5
+
+### Added
+
+- Odyssey's pause-menu `Two Players` and `One Player` actions now control the full-player co-op lifecycle. Normal startup remains P1-only; starting co-op rebuilds safely with P2, and ending co-op returns to P1-only without stale player state or co-op HUDs.
+- P2 can open the shared map, move its cursor, and confirm checkpoint warps.
+- P2 can receive NPC talk prompts, start conversations, and advance dialogue.
+
+### Improved
+
+- Co-op mode keeps Odyssey's native Mario-and-Cappy Separate Play state disabled, preserving independent full-player controller routing.
+- Repeated 1P/2P switching cleans up P2 health state and scene-owned HUD objects before rebuilding.
+
 ## v0.1.0-alpha.4
 
 ### Resolved

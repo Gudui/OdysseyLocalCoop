@@ -59,6 +59,37 @@ namespace PatchOffsets {
     constexpr ptrdiff_t GameDataHolderSetSeparatePlay = 0x531678;     // GameDataHolder::setSeparatePlay(bool) — Matching
     constexpr ptrdiff_t RsIsSeparatePlay = 0x575af4;                  // rs::isSeparatePlay(const al::IUseSceneObjHolder*)
     constexpr ptrdiff_t RsChangeSeparatePlayMode = 0x575b18;          // rs::changeSeparatePlayMode()
+    constexpr ptrdiff_t PauseMenuAppearSeparateReturn = 0x4ea274;     // LR after rs::isSeparatePlay BL @ 0x4ea270 in StageSceneStatePauseMenu::appear
+    constexpr ptrdiff_t PauseMenuSetNormalSeparateReturn = 0x4eab30;  // LR after rs::isSeparatePlay BL @ 0x4eab2c in StageSceneStatePauseMenu::setNormal
+    constexpr ptrdiff_t PauseMenuWaitLabelSeparateReturn = 0x4ead70;  // LR after rs::isSeparatePlay BL @ 0x4ead6c in StageSceneStatePauseMenu::exeWait
+    constexpr ptrdiff_t PauseMenuWaitGuardSeparateReturn = 0x4eaee8;  // LR after rs::isSeparatePlay BL @ 0x4eaee4 in StageSceneStatePauseMenu::exeWait
+    constexpr ptrdiff_t PauseMenuWaitBranchSeparateReturn = 0x4eaf08; // LR after rs::isSeparatePlay BL @ 0x4eaf04 in StageSceneStatePauseMenu::exeWait
+    constexpr ptrdiff_t PauseMenuExeAppear = 0x4ea8b0;                // StageSceneStatePauseMenu::exeAppear() — Matching source + file_list.yml
+    constexpr ptrdiff_t PauseMenuSetNormal = 0x4eaa7c;                // StageSceneStatePauseMenu::setNormal() — Matching source + file_list.yml
+    constexpr ptrdiff_t PauseMenuCodeEnd = 0x4ebb30;                  // StageSceneStatePauseMenu dtor boundary — file_list.yml
+    constexpr ptrdiff_t RequestGraphicsPresetAndCubeMapPause = 0x4d32c8; // rs::requestGraphicsPresetAndCubeMapPause(Scene const*) — file_list.yml + Ghidra 20260727-182505
+    constexpr ptrdiff_t RequestUpdateMaterialInfo = 0x875f34;         // alGraphicsFunction::requestUpdateMaterialInfo(Scene*) — file_list.yml + Ghidra 20260727-182505
+    constexpr ptrdiff_t GraphicsPresetDirectorRequestPreset = 0x876ff0; // al::GraphicsPresetDirector::requestPreset(...) — file_list.yml + Ghidra 20260727-194249
+    constexpr ptrdiff_t GraphicsPresetDirectorUpdate = 0x876890;      // al::GraphicsPresetDirector::update() — file_list.yml + Ghidra 20260727-204921
+    constexpr ptrdiff_t MaterialCategoryKeeperRequestParam = 0x8c027c; // al::MaterialCategoryKeeper::requestParam(...) — file_list.yml + Ghidra 20260727-210418
+    constexpr ptrdiff_t HdrComposeRequestParam = 0x9add40;            // al::HdrCompose::requestParam(...) — file_list.yml + Ghidra 20260727-210418
+    constexpr ptrdiff_t GraphicsParamRequesterRequestParam = 0xa5268c; // al::GraphicsParamRequesterImpl::requestParam(...) — file_list.yml + Ghidra 20260727-210418
+    constexpr ptrdiff_t ProgramTextureKeeperRequestParam = 0xa29508;  // al::ProgramTextureKeeper::requestParam(...) — file_list.yml + Ghidra 20260727-210418
+    constexpr ptrdiff_t FogDirectorRequestFogParam = 0x8a5694;        // al::FogDirector::requestFogParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t FogDirectorRequestYFogParam = 0x8a569c;       // al::FogDirector::requestYFogParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t BloomDirectorRequestParam = 0x8bcb38;         // al::BloomDirector::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t DepthOfFieldRequestParam = 0x9a751c;          // al::DepthOfFieldDrawer::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t FlareFilterRequestParam = 0x9a7e48;           // al::FlareFilterDirector::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t GodRayRequestParam = 0x9a9110;                // al::GodRayDirector::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t LightStreakRequestParam = 0x9b5f50;           // al::LightStreakDirector::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t VignettingRequestParam = 0x9bdcb0;            // al::VignettingDrawer::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t ShaderMirrorRequestParam = 0xa07ed0;          // al::ShaderMirrorDirector::requestParam(...) — file_list.yml + Ghidra 20260727-221126
+    constexpr ptrdiff_t ShadowDirectorRequestDepthParam = 0xa1e57c;   // al::ShadowDirector::requestParam(...DepthShadowParam...) — file_list.yml + Ghidra 20260727-223235
+    constexpr ptrdiff_t ShadowDirectorRequestClipParam = 0xa1e584;    // al::ShadowDirector::requestParam(...DepthShadowClipParam...) — file_list.yml + Ghidra 20260727-223235
+    constexpr ptrdiff_t PauseGraphicsPresetName = 0x184c2a3;          // "Pause" preset name used by requestGraphicsPresetAndCubeMapPause — Ghidra 20260727-194326
+    constexpr ptrdiff_t PausePresetSharedReturn = 0x4d2fb0;           // instruction after shared wrapper's requestPreset BL — Ghidra 20260727-194326
+    constexpr ptrdiff_t PausePresetNoFixedReturn = 0x4d3324;          // instruction after PauseNoFixedAngle requestPreset BL — Ghidra 20260727-194326
+    constexpr ptrdiff_t RsSetSeparatePlayMode = 0x575b90;             // rs::setSeparatePlayMode(al::Scene*, bool) — sole caller StageScene::init+0x2a7c @ 0x4cb098
     constexpr ptrdiff_t IsSeparatePlaySingleJoy = 0x44fe3c;           // PlayerInputFunction::isSeparatePlaySingleJoy(const al::LiveActor*, s32)
 
     /* Scene-UI input family (Ghidra runs 20260724-200445/200614/200720/200758).
@@ -67,8 +98,44 @@ namespace PatchOffsets {
      * player ports when set. rs::tryOpenMap 0x4d2bb4 gates the map transition
      * solely on RsIsTriggerMapOpen. */
     constexpr ptrdiff_t RsIsTriggerMapOpen = 0x576a04;                // rs::isTriggerMapOpen(const al::IUseSceneObjHolder*) — file_list.yml, size 168
+    /* Native dual-port map-open acceptor: the branch rs::isTriggerMapOpen TAIL-
+     * CALLS when GameDataHolder+0x245 is set (Ghidra run 20260725-192932).
+     * bool()(void): minus from getPlayerControllerPort(0) OR (1), and plus from
+     * port(1) in the Joy-Con-pair layouts. No symbol (FUN_), no bounds checks —
+     * callers must guard both ports >= 0 before calling it. */
+    constexpr ptrdiff_t RsMapOpenDualPortTrigger = 0x576d1c;          // tail-call target of rs::isTriggerMapOpen's SeparatePlay branch
     constexpr ptrdiff_t AlIsPadTriggerMinus = 0x85d26c;               // al::isPadTriggerMinus(s32 port) — file_list.yml; NO bounds check, caller guards port >= 0
     constexpr ptrdiff_t AlIsPadTriggerUp = 0x85c8d8;                  // al::isPadTriggerUp(s32 port) — file_list.yml; NO bounds check
+
+    /* Map-SCREEN input path (Ghidra runs 20260726-115954/120038/120342/120628).
+     * StageSceneStateStageMap is the state rs::tryOpenMap enters. Its cursor pan
+     * (sub_4f0f08 -> MapLayout::scroll), zoom (MapLayout::addSize) and confirm
+     * all read the SAME rs:: helpers, and every one of them branches on
+     * GameDataHolder+0x245 exactly like rs::isTriggerMapOpen: main controller
+     * only when clear, port(0) with a port(1) fallback when set. */
+    constexpr ptrdiff_t RsGetUiLeftStick = 0x576afc;                  // rs::getUiLeftStick(const al::IUseSceneObjHolder*) — file_list.yml, size 256; returns sead::Vector2f in s0/s1 (listing 0x576be4..0x576bf8). Map cursor pan.
+    constexpr ptrdiff_t RsGetUiRightStick = 0x576bfc;                 // rs::getUiRightStick(const al::IUseSceneObjHolder*) — file_list.yml; returns sead::Vector2f in s0/s1 (listing 0x576d04..0x576d18). Map zoom.
+    constexpr ptrdiff_t RsIsTriggerUiDecide = 0x575ba8;               // rs::isTriggerUiDecide(const al::IUseSceneObjHolder*) — file_list.yml, size 80; A from main port, or from port(0) OR port(1) when +0x245 is set
+    constexpr ptrdiff_t StageMapTryCheckpointWarp = 0x4f161c;         // StageSceneStateStageMap::tryCheckpointWarp(GameDataHolderAccessor, const MapIconInfo*) — file_list.yml; pure predicate, gates solely on RsIsTriggerUiDecide
+    constexpr ptrdiff_t AlGetSceneObj = 0x9cf008;                     // al::getSceneObj(const al::IUseSceneObjHolder*, int id) — file_list.yml, size 44
+    constexpr ptrdiff_t AlIsNearZeroVec2 = 0x91ddec;                  // al::isNearZero(const sead::Vector2f&, f32) — file_list.yml, size 32; (x0 = &vec, s0 = threshold)
+    constexpr int SceneObjIdGameDataHolder = 0x12;                    // the getSceneObj id every rs:: UI-input helper uses to reach the SeparatePlay byte
+    constexpr ptrdiff_t GameDataHolderSeparatePlay = 0x245;           // GameDataHolder+0x245, written by GameDataHolder::setSeparatePlay 0x531678
+
+    /* NPC talk path (Ghidra runs 20260726-172347/172433/172508/172615/172731).
+     * Plain talkable NPCs never reach rs::checkTriggerDecideWithRequestIcon (that
+     * is the Closet/CollectionList/HintPhoto shape). Their prompt AND their start
+     * both come out of EventFlowNodeMessageBalloon::exeWait, which measures the
+     * balloon-to-player distance with rs::getPlayerPos, tests eligibility with
+     * rs::isPlayerEnableTalkGround/Swim and reads the button with
+     * rs::isPlayerInputTriggerStartTalk — every one of them resolving
+     * al::getPlayerActor(actor, 0). Once the conversation is open, advancing and
+     * closing it goes through TalkMessage, gated on the SeparatePlay family. */
+    constexpr ptrdiff_t EventFlowNodeMessageBalloonExeWait = 0x1b79ec;// al::EventFlowNodeMessageBalloon::exeWait() — file_list.yml, size 880; the whole plain-NPC prompt+start gate
+    constexpr ptrdiff_t EventFlowNodeActorField = 0x18;               // al::EventFlowNode::mActor — decomp lib/al/Library/Event/EventFlowNode.h, confirmed by the decompiled uses (al::isInWater / calcFrontDir / multVecPose on this field)
+    constexpr ptrdiff_t TalkMessageExeTextAnim = 0x20de5c;            // TalkMessage::exeTextAnim() — file_list.yml, size 372; skips the text animation on decide/cancel
+    constexpr ptrdiff_t TalkMessageExeIconWait = 0x20e068;            // TalkMessage::exeIconWait() — file_list.yml, size 176; advances the page on decide/cancel
+    constexpr ptrdiff_t TalkMessageSceneObjHolder = 0x38;             // TalkMessage's IUseSceneObjHolder subobject: both states call rs::isTriggerUiDecide(this + 0x38)
     /* Input aggregation root cause (Ghidra run 20260709-202240, PATCH-0005):
      * changeSinglePlayMode sets NpadController[port(0)]+0x178 = -1 = "index
      * controller mode -1" = the FIRST Npad controller aggregates input from ANY
@@ -155,6 +222,9 @@ namespace PatchOffsets {
     constexpr ptrdiff_t PlayerDamageKeeperDamageForce = 0x43f304;    // PlayerDamageKeeper::damageForce(s32)
     constexpr ptrdiff_t PlayerDamageKeeperDead = 0x43f390;           // PlayerDamageKeeper::dead()
     constexpr ptrdiff_t GameDataHolderAccessorCtor = 0x5316ec;      // GameDataHolderAccessor::C2(const al::IUseSceneObjHolder*)
+    constexpr ptrdiff_t GameDataRestartStage = 0x527db4;            // GameDataFunction::restartStage(GameDataHolderWriter) — file_list.yml + Ghidra 20260727-000915
+    constexpr ptrdiff_t GameDataHolderGetNextStageName = 0x52f814;  // GameDataHolder::getNextStageName() const — file_list.yml Matching; Ghidra exePlayStage 20260727-000950
+    constexpr ptrdiff_t StageSceneKill = 0x4cc73c;                  // StageScene::kill() — file_list.yml + Ghidra 20260728-115712; calls al::Scene::kill then native exit cleanup
     constexpr ptrdiff_t GameDataGetPlayerHitPoint = 0x528678;        // GameDataFunction::getPlayerHitPoint(GameDataHolderAccessor)
     constexpr ptrdiff_t GameDataGetPlayerHitPointMaxCurrent = 0x528690; // GameDataFunction::getPlayerHitPointMaxCurrent(GameDataHolderAccessor)
     constexpr ptrdiff_t GameDataRecoveryPlayerMax = 0x528780;        
@@ -220,7 +290,56 @@ namespace PatchOffsets {
      * synchronously on the main thread, so an idle result prevents a native
      * save request from starting until the journal handle is closed. */
     constexpr ptrdiff_t AlIsDoneSaveDataSequence = 0x9cdb28;
-     
+
+    /* Metro boss -> main-Shine -> City wipe/save trace support.
+     * Every offset is Odyssey 1.0.0 file_list.yml ground truth; the Metro and
+     * City state bodies were decompiled in Ghidra runs
+     * 20260725-231722 and 20260725-231827. */
+    constexpr ptrdiff_t MofumofuExeDemoBattleEndBefore = 0x0b0cf8;
+    constexpr ptrdiff_t MofumofuExeDemoBattleEnd = 0x0b0db4;
+    constexpr ptrdiff_t MofumofuExeDemoBattleEndDieAfter = 0x0b1114;
+    constexpr ptrdiff_t StageSceneStateGetShineMainExeDemoGetStart = 0x4de320;
+    constexpr ptrdiff_t StageSceneStateGetShineMainExeDemoWipeClose = 0x4dea28;
+    constexpr ptrdiff_t StageSceneStateGetShineMainExeDemoWipeWait = 0x4deae8;
+    constexpr ptrdiff_t StageSceneStateGetShineMainExeDemoEnd = 0x4df1bc;
+    constexpr ptrdiff_t StageSceneStateGetShineMainExeDemoEndCity = 0x4df2a0;
+    constexpr ptrdiff_t GameDataFileSetGotShine = 0x51eb88;
+    constexpr ptrdiff_t SaveDataAccessSequenceStartWrite = 0x539e9c;
+    constexpr ptrdiff_t SaveDataAccessSequenceIsDoneSave = 0x53b398;
+    constexpr ptrdiff_t RsGetPlayerActorFromScene = 0x4d2d48;
+    constexpr ptrdiff_t RsIsActionEndDemoPlayer = 0x56a93c;
+    constexpr ptrdiff_t AlGetNerveStep = 0x959c8c;
+    constexpr ptrdiff_t AlWipeSimpleIsCloseEnd = 0x99e340;
+
+    /* Sequence-level liveness trace support. HakoniwaSequence is the state
+     * machine ABOVE the scene: it keeps ticking while a scene is destroyed,
+     * loaded and rebuilt, which is exactly the window where every scene-scoped
+     * OCoop hook goes silent. All offsets are Odyssey 1.0.0 file_list.yml
+     * ground truth (symbols _ZN16HakoniwaSequence*); update() decompiled in
+     * Ghidra run 20260726-225849. */
+    constexpr ptrdiff_t HakoniwaSequenceUpdate = 0x50f030;             // size 332
+    constexpr ptrdiff_t HakoniwaSequenceExeLoadWorldResource = 0x50f3c4;
+    constexpr ptrdiff_t HakoniwaSequenceExeLoadStage = 0x50f548;
+    constexpr ptrdiff_t HakoniwaSequenceExePlayStage = 0x50f90c;    // file_list.yml + Ghidra 20260727-000950
+    constexpr ptrdiff_t HakoniwaSequenceExeDemoWorldWarp = 0x51008c;
+    constexpr ptrdiff_t HakoniwaSequenceExeDestroy = 0x5101bc;
+    constexpr ptrdiff_t HakoniwaSequenceExeMiss = 0x51058c;
+    constexpr ptrdiff_t HakoniwaSequenceExeMissCoinSub = 0x5107dc;
+    constexpr ptrdiff_t HakoniwaSequenceExeMissEnd = 0x5108dc;
+    constexpr ptrdiff_t HakoniwaSequenceExeWaitWriteData = 0x510a60;
+    constexpr ptrdiff_t HakoniwaSequenceExeWaitLoadData = 0x510ab8;
+
+    /* HakoniwaSequence field offsets. OdysseyDecomp src/Sequence/HakoniwaSequence.h
+     * gives the member order; the al::Sequence base size of 0xb0 is pinned by the
+     * Ghidra decompile of update(), where the accessor is param_1[0x17] = 0xb8,
+     * mLayoutKit is [0x1f] = 0xf8 and mWipeHolder is [0x36] = 0x1b0, and the
+     * decomp's own placeholder members _100 and _1a4 land exactly on the
+     * mStageName / mNextScenarioNum boundaries. */
+    constexpr ptrdiff_t HakoniwaSequenceCurrentScene = 0xb0;
+    constexpr ptrdiff_t HakoniwaSequenceStageNameTop = 0x110;  // sead::SafeString::mStringTop
+    constexpr ptrdiff_t HakoniwaSequenceNextScenarioNum = 0x1a0;
+
+
     constexpr ptrdiff_t ShineReceiveMsg = 0x1cfb68;
     constexpr ptrdiff_t ShineIsGot = 0x1d06a8;       // Shine::isGot() const; file_list.yml + Ghidra 20260716-103146, native GameData lookup by shine+0x290 index
     constexpr ptrdiff_t RsIsMsgShineGet = 0x58f20c;
@@ -492,6 +611,121 @@ namespace PatchOffsets {
  * PlayerHolder::tryGetPlayer producer used by both actor and position helpers.
  * Disable for a one-line A/B. */
 #define PATCH_0047_ENABLED 1
+
+/* PATCH-0048: P2 can open the shared map. Runtime verification confirmed the
+ * selector: at baseline separatePlay=0, P1's
+ * lone minus press logged native=1 and opened the map, P2's lone minus press
+ * logged p2 minus=1 with native=0 and opened nothing. rs::tryOpenMap produces no
+ * request at all when the trigger is false, so the fix belongs at the trigger.
+ *
+ * Mechanism: trampoline rs::isTriggerMapOpen and, only when the native result is
+ * false, delegate to the game's OWN dual-port acceptor 0x576d1c — the branch the
+ * native SeparatePlay path takes. That gives exact native two-player semantics
+ * (including the Joy-Con-pair plus/minus layouts) for map-open alone, instead of
+ * setting GameDataHolder+0x245, which PATCH-0005's analysis shows also reroutes
+ * Mario's cap to port(1). Map-SCREEN navigation stays P1-only (same as native
+ * two-player); either player's press toggles the shared screen. */
+#define PATCH_0048_ENABLED 1
+
+/* PATCH-0049: P2 can NAVIGATE the shared map (BUG-P2-MAP-NAVIGATION). With
+ * PATCH-0048 P2 opens the map but its stick does nothing. Ghidra (runs
+ * 20260726-115954/120038/120342/120628) localizes the whole map-screen input
+ * path to StageSceneStateStageMap and three rs:: helpers:
+ *   pan     sub_4f0f08 -> rs::getUiLeftStick 0x576afc  -> MapLayout::scroll
+ *   zoom    exeWait/exeScroll/exeIconSelectMove/exeWaitAdsorb
+ *                        -> rs::getUiRightStick 0x576bfc -> MapLayout::addSize
+ *   confirm tryCheckpointWarp 0x4f161c -> rs::isTriggerUiDecide 0x575ba8
+ * (close already works: rs::isTriggerMapClose 0x576db8 delegates to
+ * rs::isTriggerMapOpen, widened by PATCH-0048.)
+ *
+ * All three have the SAME shape as rs::isTriggerMapOpen: GameDataHolder+0x245
+ * clear -> al::getMainControllerPort() only; set -> port(0) with a port(1)
+ * fallback, including the Joy-Con single/hold-X layouts. Unlike map-open there
+ * is no separate dual-port subroutine to delegate to (the branch is inlined),
+ * so the equivalent minimal move is to run the NATIVE dual-port branch by
+ * setting that byte for the dynamic extent of one call and restoring it — the
+ * scoped-selector idiom PATCH-0017/PATCH-0047 already use. Nothing else can
+ * observe the byte inside those calls (each only reads pads / save flags), so
+ * Mario's cap is NOT rerouted the way rs::changeSeparatePlayMode would.
+ *
+ * P1 stays bit-for-bit vanilla: every hook calls Orig() first and returns that
+ * result unchanged whenever P1 actually produced input (stick outside the
+ * native 0.001 dead zone, or the confirm predicate already true). The scoped
+ * second call happens only on frames P1 was neutral, and only when both
+ * controller ports resolve >= 0. Disable for a one-line A/B. */
+#define PATCH_0049_ENABLED 1
+
+/* PATCH-0050: P2 can talk to NPCs (BUG-P2-NPC-TALK-INTERACTION). Ghidra runs
+ * 20260726-172347/172433/172508/172615/172731 replace the earlier guess that the
+ * plain-NPC path runs through rs::checkTriggerDecideWithRequestIcon: it does not
+ * (that one has four callers, all Closet/CollectBgmSpeaker/CollectionList/
+ * HintPhoto). The plain path is al::EventFlowNodeMessageBalloon::exeWait
+ * 0x1b79ec, and it is BOTH the prompt and the start gate:
+ *   distance  al::multVecPose(npc) vs rs::getPlayerPos      -> getPlayerActor(.,0)
+ *   eligible  rs::isPlayerEnableTalkGround / ...TalkSwim    -> getPlayerActor(.,0)
+ *   prompt    rs::requestNpcEventTalkBalloonMessageWithEnableButtonA
+ *   start     rs::isPlayerInputTriggerStartTalk             -> getPlayerActor(.,0)
+ * So the NPC measures its distance to P1, judges P1's state and reads P1's pad.
+ * P2 standing at the NPC is invisible to all three — exactly the reported "no
+ * prompt AND no reaction to A", and one selector explains both halves.
+ *
+ * Part 1 (prompt + start): trampoline exeWait and, for the extent of that ONE
+ * native call, redirect the shared player-index selector to whichever player is
+ * actually nearer the NPC, using the already-shipped PATCH-0017/PATCH-0047
+ * scoped al::PlayerHolder::tryGetPlayer redirect. Nearest-player is what makes
+ * the balloon behave like the single-player game for whoever walked up. When P1
+ * is nearer (or P2 does not exist) nothing is set and the call is bit-for-bit
+ * native. Note exeWait has side effects (it requests the balloon), so unlike
+ * PATCH-0049 it is called exactly ONCE — the index is chosen before the call.
+ *
+ * Part 2 (advance/close the dialogue): TalkMessage::exeTextAnim 0x20de5c and
+ * ::exeIconWait 0x20e068 gate on rs::isTriggerUiDecide / rs::isTriggerUiCancel,
+ * the same GameDataHolder+0x245 family PATCH-0049 just fixed for the map. Scope
+ * that byte across the whole state call, which covers decide and cancel in one
+ * move, so either pad can page through a conversation the other one started.
+ * Requires PATCH_0049_ENABLED for the shared scope helpers. */
+#define PATCH_0050_ENABLED 1
+
+/* PATCH-0051: retired. Suppressing completed "Pause" preset reapplications
+ * reduced repeat latency, but the permanent-build test changed Mario/Cappy
+ * rendering and therefore disproved this as a safe fix. Keep the code behind
+ * its kill switch as historical recovery evidence only. */
+#define PATCH_0051_ENABLED 0
+
+/* PATCH-0052: menu-controlled OCoop lifecycle. Native SeparatePlay cannot stay
+ * enabled because it changes Mario/Cappy input and camera semantics. Capture
+ * Start/One Player requests into a private mode, force native SeparatePlay
+ * false, rebuild the current StageScene through its native kill/sequence path,
+ * and expose the private bit only to the five Ghidra-proven PauseMenu queries.
+ * PATCH-0001 and co-op HUD construction consume this private mode at scene
+ * initialization. Confirmed across two complete activation/deactivation cycles. */
+#define PATCH_0052_ENABLED 1
+
+#if PATCH_0052_ENABLED
+namespace patch0052 {
+static bool sTwoPlayer = false;
+static bool sKillPending = false;
+static unsigned sRequests = 0;
+static unsigned sMenuQueries = 0;
+
+static bool IsTwoPlayer() {
+    return sTwoPlayer;
+}
+
+static bool IsPauseMenuSeparatePlayReturn(uintptr_t lr) {
+    const uintptr_t base =
+        (uintptr_t)exl::util::modules::GetTargetOffset(0);
+    if (lr < base)
+        return false;
+    const uintptr_t nso = lr - base;
+    return nso == (uintptr_t)PatchOffsets::PauseMenuAppearSeparateReturn ||
+           nso == (uintptr_t)PatchOffsets::PauseMenuSetNormalSeparateReturn ||
+           nso == (uintptr_t)PatchOffsets::PauseMenuWaitLabelSeparateReturn ||
+           nso == (uintptr_t)PatchOffsets::PauseMenuWaitGuardSeparateReturn ||
+           nso == (uintptr_t)PatchOffsets::PauseMenuWaitBranchSeparateReturn;
+}
+}
+#endif
 #define PATCH_0016_FALL_TIMEOUT_FRAMES 120
 /* v3: the to-3D direction CYCLES instead of stalling (run 20-22-39: three
  * startRecovery fires ~4 s apart in ONE Abyss episode): the 2D-form player
@@ -2434,6 +2668,15 @@ HOOK_DEFINE_TRAMPOLINE(Patch0014P2HudLayoutCtor) {
     static void Callback(void* self, const char* name, const void* layoutInitInfo,
                          const void* playerHolder, const void* subCameraRenderer) {
         Orig(self, name, layoutInitInfo, playerHolder, subCameraRenderer);
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_144.inc"
+#endif
+#if PATCH_0052_ENABLED
+        if (!patch0052::IsTwoPlayer()) {
+            Logging.Log("[OCoop] PATCH-0052 solo StageSceneLayout: co-op HUDs skipped");
+            return;
+        }
+#endif
         /* Reload before constructing OCoop's scene-owned HUD. All later scene
          * systems (P2 creation, camera, bubble, respawn) consume this same
          * immutable settings snapshot. */
@@ -2713,6 +2956,24 @@ namespace patch0009 {
         sP2DownFrames = 0;
         sP2DeadStateSeen = false;
         ResetP2Health(p2);
+    }
+
+    static void ResetSoloSceneState() {
+#if PATCH_0014_ENABLED
+        p2hud::DetachForSceneReset();
+#endif
+        sP2Health = PATCH_0009_P2_HEALTH_MAX;
+        sP2MaxHealth = PATCH_0009_P2_HEALTH_MAX;
+        sP2HealthValid = false;
+        sP1Terminal = false;
+        sP1DelayActive = false;
+        sP1DownFrames = 0;
+        sP1DeadStateSeen = false;
+        sP2Terminal = false;
+        sP2DelayActive = false;
+        sP2DownFrames = 0;
+        sP2DeadStateSeen = false;
+        Logging.Log("[OCoop] PATCH-0009 solo scene state reset P2-valid=0");
     }
 
     static void GrantP2LifeUp() {
@@ -3131,6 +3392,24 @@ HOOK_DEFINE_INLINE(Patch0001SpawnP2) {
             Logging.Log("[OCoop] PATCH-0001 B: no capture, skip");
             return;
         }
+#if OCOOP_DEV_DIAGNOSTICS
+#include "program/diagnostics_private/fragment_138.inc"
+#include "program/diagnostics_private/fragment_142.inc"
+#endif
+#if PATCH_0052_ENABLED
+        if (!patch0052::IsTwoPlayer()) {
+#if PATCH_0009_ENABLED
+            patch0009::ResetSoloSceneState();
+#endif
+#if PATCH_0019_ENABLED
+            coinrace::ResetRound();
+#endif
+            patch0001::sCaptureValid = false;
+            Logging.Log("[OCoop] PATCH-0052 StageScene gate mode=1P P2=skip cleanup=1");
+            return;
+        }
+        Logging.Log("[OCoop] PATCH-0052 StageScene gate mode=2P P2=allow");
+#endif
         patch0001::sCaptureValid = false;  // one spawn per capture
 
         auto getPlayerControllerPort =
@@ -4109,7 +4388,7 @@ HOOK_DEFINE_TRAMPOLINE(Patch0008CoopCameraFinalZoom) {
 #if OCOOP_DEV_DIAGNOSTICS
 #include "program/diagnostics_private/fragment_070.inc"
 #endif
-#if OCOOP_DEV_DIAGNOSTICS
+#if OCOOP_DEV_DIAGNOSTICS && (DIAG_0044_ENABLED || DIAG_0045_ENABLED)
         const float diagNativeEye[3] = {eye[0], eye[1], eye[2]};
 #endif
         patch0008::ScaleFinalPose(eye, at, self);
@@ -4912,9 +5191,484 @@ HOOK_DEFINE_TRAMPOLINE(Patch0013CapReturnOwner) {
 };
 #endif
 
+#if PATCH_0048_ENABLED
+/* Accept a map-open request from P2's controller. Runs every frame (13 callers),
+ * so the fast path is the native result; the extra work happens only on frames
+ * the native trigger rejected. Ports are re-resolved every call: they are
+ * dynamic and al::getPlayerControllerPort returns -1 for an absent Npad, which
+ * the pad-trigger family would happily index. */
+HOOK_DEFINE_TRAMPOLINE(Patch0048P2MapOpenTrigger) {
+    static bool Callback(const void* sceneObjHolder) {
+        if (Orig(sceneObjHolder))
+            return true;
+
+        auto getPlayerPort =
+            OcoopFn<int (*)(int)>(PatchOffsets::AlGetPlayerControllerPort);
+        const int p1Port = getPlayerPort(0);
+        const int p2Port = getPlayerPort(1);
+        if (p1Port < 0 || p2Port < 0)
+            return false;
+
+        auto dualPortTrigger =
+            OcoopFn<bool (*)()>(PatchOffsets::RsMapOpenDualPortTrigger);
+        if (!dualPortTrigger())
+            return false;
+
+        static unsigned logged = 0;
+        if (logged < 20) {
+            ++logged;
+            Logging.Log("[OCoop] PATCH-0048 map-open accepted from second port p1port=%d p2port=%d",
+                        p1Port, p2Port);
+        }
+        return true;
+    }
+};
+#endif
+
+#if PATCH_0049_ENABLED
+namespace patch0049 {
+
+/* sead::Vector2f as the AArch64 ABI sees it: a 2-float HFA returned in s0/s1,
+ * which is exactly how rs::getUiLeftStick / getUiRightStick return (listing
+ * 0x576be4 fmov s0,w20 / 0x576bf0 fmov s1,w21 and 0x576d04 ldr s0 / ldr s1). */
+struct Vec2f {
+    float x;
+    float y;
+};
+
+/* The native dead zone both helpers test against (0x3a83126f at 0x576b84 /
+ * 0x576c94). */
+constexpr float kStickDeadZone = 0.001f;
+
+static bool IsStickNeutral(const Vec2f& v) {
+    auto isNearZero = OcoopFn<bool (*)(const Vec2f*, float)>(PatchOffsets::AlIsNearZeroVec2);
+    return isNearZero(&v, kStickDeadZone);
+}
+
+/* al::getPlayerControllerPort returns -1 for an absent Npad and the pad helpers
+ * behind the dual-port branch have no bounds check, so both ports must resolve
+ * before the native branch may run. Re-resolved every call: ports are dynamic. */
+static bool AreBothPortsPresent() {
+    auto getPlayerPort = OcoopFn<int (*)(int)>(PatchOffsets::AlGetPlayerControllerPort);
+    return getPlayerPort(0) >= 0 && getPlayerPort(1) >= 0;
+}
+
+/* The SeparatePlay byte, reached exactly the way the rs:: helpers reach it. */
+static unsigned char* FindSeparatePlayFlag(const void* sceneObjHolder) {
+    if (!IsPtr8((uintptr_t)sceneObjHolder))
+        return nullptr;
+    auto getSceneObj = OcoopFn<void* (*)(const void*, int)>(PatchOffsets::AlGetSceneObj);
+    uintptr_t holder = (uintptr_t)getSceneObj(sceneObjHolder,
+                                              PatchOffsets::SceneObjIdGameDataHolder);
+    if (!IsPtr8(holder))
+        return nullptr;
+    return (unsigned char*)(holder + PatchOffsets::GameDataHolderSeparatePlay);
+}
+
+/* Set the byte for the dynamic extent of one native call, then put back exactly
+ * what was there. Inactive when the flag could not be resolved or the game is
+ * already in SeparatePlay mode (then the native path is dual-port anyway). */
+class SeparatePlayScope {
+public:
+    explicit SeparatePlayScope(unsigned char* flag) : mFlag(nullptr), mPrev(0) {
+        if (flag != nullptr && *flag == 0) {
+            mFlag = flag;
+            mPrev = *flag;
+            *flag = 1;
+        }
+    }
+    ~SeparatePlayScope() {
+        if (mFlag != nullptr)
+            *mFlag = mPrev;
+    }
+    bool isActive() const { return mFlag != nullptr; }
+
+private:
+    unsigned char* mFlag;
+    unsigned char mPrev;
+};
+
+static unsigned sLoggedPan = 0;
+static unsigned sLoggedZoom = 0;
+static unsigned sLoggedDecide = 0;
+
+}  // namespace patch0049
+
+/* Map cursor pan. Hot on the map screen only; the fast path is the native
+ * result, and the extra work happens only on frames P1's stick was neutral. */
+HOOK_DEFINE_TRAMPOLINE(Patch0049UiLeftStick) {
+    static patch0049::Vec2f Callback(const void* sceneObjHolder) {
+        patch0049::Vec2f native = Orig(sceneObjHolder);
+        if (!patch0049::IsStickNeutral(native))
+            return native;
+        if (!patch0049::AreBothPortsPresent())
+            return native;
+
+        patch0049::SeparatePlayScope scope(patch0049::FindSeparatePlayFlag(sceneObjHolder));
+        if (!scope.isActive())
+            return native;
+
+        patch0049::Vec2f dual = Orig(sceneObjHolder);
+        if (patch0049::IsStickNeutral(dual))
+            return native;
+        if (patch0049::sLoggedPan < 20) {
+            ++patch0049::sLoggedPan;
+            Logging.Log("[OCoop] PATCH-0049 map pan from second port x=%d y=%d (milli)",
+                        (int)(dual.x * 1000.0f), (int)(dual.y * 1000.0f));
+        }
+        return dual;
+    }
+};
+
+/* Map zoom. Same shape; this helper also serves a few non-map UI consumers,
+ * which the Orig()-first fast path leaves untouched while P1 is providing
+ * input, and which native two-player mode routes dual-port anyway. */
+HOOK_DEFINE_TRAMPOLINE(Patch0049UiRightStick) {
+    static patch0049::Vec2f Callback(const void* sceneObjHolder) {
+        patch0049::Vec2f native = Orig(sceneObjHolder);
+        if (!patch0049::IsStickNeutral(native))
+            return native;
+        if (!patch0049::AreBothPortsPresent())
+            return native;
+
+        patch0049::SeparatePlayScope scope(patch0049::FindSeparatePlayFlag(sceneObjHolder));
+        if (!scope.isActive())
+            return native;
+
+        patch0049::Vec2f dual = Orig(sceneObjHolder);
+        if (patch0049::IsStickNeutral(dual))
+            return native;
+        if (patch0049::sLoggedZoom < 20) {
+            ++patch0049::sLoggedZoom;
+            Logging.Log("[OCoop] PATCH-0049 map zoom from second port x=%d y=%d (milli)",
+                        (int)(dual.x * 1000.0f), (int)(dual.y * 1000.0f));
+        }
+        return dual;
+    }
+};
+
+/* Map confirm (checkpoint warp). tryCheckpointWarp is a pure predicate — it
+ * reads the decide trigger plus save flags and returns bool with no side effects
+ * (Ghidra run 20260726-120342) — so calling it a second time under the scope is
+ * safe. Its GameDataHolderAccessor argument is a single GameDataHolder* (decomp
+ * src/System/GameDataHolderAccessor.h), i.e. the object carrying +0x245. */
+HOOK_DEFINE_TRAMPOLINE(Patch0049MapConfirm) {
+    static bool Callback(void* self, void* gameDataHolder, const void* iconInfo) {
+        if (Orig(self, gameDataHolder, iconInfo))
+            return true;
+        if (!patch0049::AreBothPortsPresent())
+            return false;
+        if (!IsPtr8((uintptr_t)gameDataHolder))
+            return false;
+
+        patch0049::SeparatePlayScope scope(
+            (unsigned char*)((uintptr_t)gameDataHolder +
+                             PatchOffsets::GameDataHolderSeparatePlay));
+        if (!scope.isActive())
+            return false;
+
+        if (!Orig(self, gameDataHolder, iconInfo))
+            return false;
+        if (patch0049::sLoggedDecide < 20) {
+            ++patch0049::sLoggedDecide;
+            Logging.Log("[OCoop] PATCH-0049 map confirm accepted from second port");
+        }
+        return true;
+    }
+};
+#endif
+
+#if PATCH_0050_ENABLED
+#if !PATCH_0049_ENABLED || !PATCH_0017_ENABLED
+#error "PATCH-0050 reuses patch0049's SeparatePlay scope and PATCH-0017's tryGetPlayer redirect"
+#endif
+namespace patch0050 {
+
+static unsigned sLoggedPick = 0;
+static unsigned sLoggedAdvance = 0;
+
+/* Which player is nearer this NPC, or -1 to leave the call native. Index 0 also
+ * returns -1: the native selector already resolves player 0, so there is nothing
+ * to redirect and P1's talks stay bit-for-bit vanilla. Everything is re-derived
+ * from the NPC each call — no cached actors, no cached positions. */
+static int NearerPlayerIndex(const void* npc, float* outD1, float* outD2) {
+    if (!IsPtr8((uintptr_t)npc))
+        return -1;
+
+    auto tryGetPlayerActor =
+        OcoopFn<void* (*)(const void*, int)>(PatchOffsets::AlTryGetPlayerActor);
+    auto getTrans = OcoopFn<const float* (*)(const void*)>(PatchOffsets::AlGetTrans);
+
+    /* Resolve the players with the redirect neutralised, so an outer scope (a
+     * PATCH-0017 receiveMsg, say) cannot bend our own index-0 lookup. */
+    const int saved = patch0017::sQueryIdx;
+    patch0017::sQueryIdx = -1;
+    void* p1 = tryGetPlayerActor(npc, 0);
+    void* p2 = tryGetPlayerActor(npc, 1);
+    patch0017::sQueryIdx = saved;
+
+    if (!IsPtr8((uintptr_t)p1) || !IsPtr8((uintptr_t)p2))
+        return -1;  /* solo play, or P2 not spawned yet */
+
+    const float* np = getTrans(npc);
+    const float* a = getTrans(p1);
+    const float* b = getTrans(p2);
+    if (np == nullptr || a == nullptr || b == nullptr)
+        return -1;
+
+    const float d1 = (a[0] - np[0]) * (a[0] - np[0]) + (a[1] - np[1]) * (a[1] - np[1]) +
+                     (a[2] - np[2]) * (a[2] - np[2]);
+    const float d2 = (b[0] - np[0]) * (b[0] - np[0]) + (b[1] - np[1]) * (b[1] - np[1]) +
+                     (b[2] - np[2]) * (b[2] - np[2]);
+    if (outD1 != nullptr) *outD1 = d1;
+    if (outD2 != nullptr) *outD2 = d2;
+    return d2 < d1 ? 1 : -1;
+}
+
+}  // namespace patch0050
+
+/* Prompt + start. Runs once per talk-balloon node per frame; the added cost when
+ * P1 is nearer is two tryGetPlayerActor calls and three getTrans reads. */
+HOOK_DEFINE_TRAMPOLINE(Patch0050BalloonWait) {
+    static void Callback(void* self) {
+        int idx = -1;
+        float d1 = 0.0f;
+        float d2 = 0.0f;
+        if (IsPtr8((uintptr_t)self)) {
+            uintptr_t npc =
+                *(uintptr_t*)((uintptr_t)self + PatchOffsets::EventFlowNodeActorField);
+            if (IsPtr8(npc))
+                idx = patch0050::NearerPlayerIndex((const void*)npc, &d1, &d2);
+        }
+
+        if (idx <= 0) {
+            Orig(self);
+            return;
+        }
+
+        const int prev = patch0017::sQueryIdx;
+        patch0017::sQueryIdx = idx;
+        Orig(self);
+        patch0017::sQueryIdx = prev;
+
+        if (patch0050::sLoggedPick < 20) {
+            ++patch0050::sLoggedPick;
+            Logging.Log("[OCoop] PATCH-0050 talk balloon resolved to player %d d1=%d d2=%d (sq)",
+                        idx, (int)d1, (int)d2);
+        }
+    }
+};
+
+/* Advance / skip the running conversation. The scope covers the whole state so
+ * rs::isTriggerUiDecide AND rs::isTriggerUiCancel both see the native dual-port
+ * branch; the byte is restored before the call returns. P1 is unaffected: port(0)
+ * is accepted either way. */
+HOOK_DEFINE_TRAMPOLINE(Patch0050TalkTextAnim) {
+    static void Callback(void* self) {
+        if (!IsPtr8((uintptr_t)self) || !patch0049::AreBothPortsPresent()) {
+            Orig(self);
+            return;
+        }
+        patch0049::SeparatePlayScope scope(patch0049::FindSeparatePlayFlag(
+            (const void*)((uintptr_t)self + PatchOffsets::TalkMessageSceneObjHolder)));
+        if (scope.isActive() && patch0050::sLoggedAdvance < 10) {
+            ++patch0050::sLoggedAdvance;
+            Logging.Log("[OCoop] PATCH-0050 talk message dual-port scope active");
+        }
+        Orig(self);
+    }
+};
+
+HOOK_DEFINE_TRAMPOLINE(Patch0050TalkIconWait) {
+    static void Callback(void* self) {
+        if (!IsPtr8((uintptr_t)self) || !patch0049::AreBothPortsPresent()) {
+            Orig(self);
+            return;
+        }
+        patch0049::SeparatePlayScope scope(patch0049::FindSeparatePlayFlag(
+            (const void*)((uintptr_t)self + PatchOffsets::TalkMessageSceneObjHolder)));
+        Orig(self);
+    }
+};
+#endif
+
+#if PATCH_0051_ENABLED
+namespace patch0051 {
+static bool IsExactPausePresetCall(uintptr_t lr, const char* presetName,
+                                   int priority) {
+    const uintptr_t base =
+        (uintptr_t)exl::util::modules::GetTargetOffset(0);
+    if (lr < base)
+        return false;
+    const uintptr_t nso = lr - base;
+    const char* expectedName = reinterpret_cast<const char*>(
+        exl::util::modules::GetTargetOffset(
+            PatchOffsets::PauseGraphicsPresetName));
+    const bool knownReturn =
+        nso == (uintptr_t)PatchOffsets::PausePresetSharedReturn ||
+        nso == (uintptr_t)PatchOffsets::PausePresetNoFixedReturn;
+    return knownReturn && presetName == expectedName && priority == 1000;
+}
+
+static void* sDirector = nullptr;
+static bool sForwardedForDirector = false;
+static unsigned sSuppressedForDirector = 0;
+}
+
+HOOK_DEFINE_TRAMPOLINE(Patch0051CoalesceCompletedPausePreset) {
+    static void Callback(void* director, const char* presetName, int priority,
+                         int arg3, int arg4, const void* lookDirection) {
+        const uintptr_t lr = (uintptr_t)__builtin_return_address(0);
+        if (!patch0051::IsExactPausePresetCall(lr, presetName, priority)) {
+            Orig(director, presetName, priority, arg3, arg4, lookDirection);
+            return;
+        }
+
+        if (patch0051::sDirector != director) {
+            patch0051::sDirector = director;
+            patch0051::sForwardedForDirector = false;
+            patch0051::sSuppressedForDirector = 0;
+        }
+
+        if (patch0051::sForwardedForDirector) {
+            ++patch0051::sSuppressedForDirector;
+            if (patch0051::sSuppressedForDirector <= 4)
+                Logging.Log("[OCoop] PATCH-0051 suppress completed Pause reapply=%u director=%p",
+                            patch0051::sSuppressedForDirector, director);
+            return;
+        }
+
+        patch0051::sForwardedForDirector = true;
+        Logging.Log("[OCoop] PATCH-0051 forward first Pause director=%p",
+                    director);
+        Orig(director, presetName, priority, arg3, arg4, lookDirection);
+    }
+};
+#endif
+
 #if OCOOP_DEV_DIAGNOSTICS
 #include "program/diagnostics_private/fragment_043.inc"
 #include "program/diagnostics_private/fragment_079.inc"
+#include "program/diagnostics_private/fragment_081.inc"
+#include "program/diagnostics_private/fragment_085.inc"
+#include "program/diagnostics_private/fragment_091.inc"
+#include "program/diagnostics_private/fragment_093.inc"
+#include "program/diagnostics_private/fragment_095.inc"
+#include "program/diagnostics_private/fragment_097.inc"
+#include "program/diagnostics_private/fragment_099.inc"
+#include "program/diagnostics_private/fragment_101.inc"
+#include "program/diagnostics_private/fragment_103.inc"
+#include "program/diagnostics_private/fragment_105.inc"
+#include "program/diagnostics_private/fragment_107.inc"
+#include "program/diagnostics_private/fragment_109.inc"
+#include "program/diagnostics_private/fragment_111.inc"
+#include "program/diagnostics_private/fragment_113.inc"
+#include "program/diagnostics_private/fragment_115.inc"
+#include "program/diagnostics_private/fragment_117.inc"
+#include "program/diagnostics_private/fragment_119.inc"
+#include "program/diagnostics_private/fragment_121.inc"
+#include "program/diagnostics_private/fragment_123.inc"
+#include "program/diagnostics_private/fragment_125.inc"
+#include "program/diagnostics_private/fragment_136.inc"
+#include "program/diagnostics_private/fragment_137.inc"
+#include "program/diagnostics_private/fragment_140.inc"
+#include "program/diagnostics_private/fragment_141.inc"
+#endif
+
+#if PATCH_0052_ENABLED
+HOOK_DEFINE_TRAMPOLINE(Patch0052PauseMenuPrivateMode) {
+    static bool Callback(const void* sceneObjHolder) {
+        const bool native = Orig(sceneObjHolder);
+        const uintptr_t lr = (uintptr_t)__builtin_return_address(0);
+        if (!patch0052::IsPauseMenuSeparatePlayReturn(lr))
+            return native;
+
+        ++patch0052::sMenuQueries;
+        if (patch0052::sMenuQueries <= 20) {
+            const uintptr_t base =
+                (uintptr_t)exl::util::modules::GetTargetOffset(0);
+            const uintptr_t nso = lr >= base ? lr - base : 0;
+            Logging.Log("[OCoop] PATCH-0052 pause selector call=%u lr=0x%lx native=%d private=%d",
+                        patch0052::sMenuQueries, (unsigned long)nso,
+                        (int)native, (int)patch0052::sTwoPlayer);
+        }
+        return patch0052::sTwoPlayer;
+    }
+};
+
+HOOK_DEFINE_TRAMPOLINE(Patch0052RequestModeAndRestart) {
+    static void Callback(void* scene, bool enabled) {
+        ++patch0052::sRequests;
+        Orig(scene, false);
+
+        if (!IsPtr8((uintptr_t)scene)) {
+            Logging.Log("[OCoop] PATCH-0052 request=%d bad scene=%p call=%u",
+                        (int)enabled, scene, patch0052::sRequests);
+            return;
+        }
+
+        const uintptr_t sceneObjHolder = (uintptr_t)scene + 0x20;
+        auto getSceneObj =
+            OcoopFn<void* (*)(const void*, int)>(PatchOffsets::AlGetSceneObj);
+        void* holder = getSceneObj((const void*)sceneObjHolder,
+                                   PatchOffsets::SceneObjIdGameDataHolder);
+        if (!IsPtr8((uintptr_t)holder)) {
+            Logging.Log("[OCoop] PATCH-0052 request=%d bad holder=%p scene=%p call=%u",
+                        (int)enabled, holder, scene, patch0052::sRequests);
+            return;
+        }
+
+        patch0052::sTwoPlayer = enabled;
+        auto restartStage =
+            OcoopFn<void (*)(void*)>(PatchOffsets::GameDataRestartStage);
+        restartStage(holder);
+        patch0052::sKillPending = true;
+        Logging.Log("[OCoop] PATCH-0052 request call=%u mode=%s nativeApplied=0 restartReturned=1 killPending=1",
+                    patch0052::sRequests, enabled ? "2P" : "1P");
+    }
+};
+
+HOOK_DEFINE_TRAMPOLINE(Patch0052SequenceKillSceneForRestart) {
+    static void Callback(void* sequence) {
+        if (!patch0052::sKillPending) {
+            Orig(sequence);
+            return;
+        }
+        patch0052::sKillPending = false;
+
+        void* scene = nullptr;
+        void* holder = nullptr;
+        const char* next = nullptr;
+        if (IsPtr8((uintptr_t)sequence)) {
+            scene = *(void**)((uintptr_t)sequence + 0xb0);
+            holder = *(void**)((uintptr_t)sequence + 0xb8);
+        }
+        if (IsPtr8((uintptr_t)holder)) {
+            auto getNextStageName =
+                OcoopFn<const char* (*)(const void*)>(
+                    PatchOffsets::GameDataHolderGetNextStageName);
+            next = getNextStageName(holder);
+        }
+
+        if (!IsPtr8((uintptr_t)scene) || !IsStrPtr((uintptr_t)next)) {
+            Logging.Log("[OCoop] PATCH-0052 sequence guard failed seq=%p scene=%p holder=%p next=%p kill=0",
+                        sequence, scene, holder, next);
+            Orig(sequence);
+            return;
+        }
+
+        const unsigned aliveBefore = *((unsigned char*)scene + 0x28);
+        auto killStageScene =
+            OcoopFn<void (*)(void*)>(PatchOffsets::StageSceneKill);
+        if (aliveBefore != 0)
+            killStageScene(scene);
+        const unsigned aliveAfter = *((unsigned char*)scene + 0x28);
+        Logging.Log("[OCoop] PATCH-0052 sequence kill scene=%p next=\"%s\" alive=%u->%u",
+                    scene, next, aliveBefore, aliveAfter);
+        Orig(sequence);
+        Logging.Log("[OCoop] PATCH-0052 exePlayStage returned after kill");
+    }
+};
 #endif
 
 extern "C" void exl_main(void* x0, void* x1) {
@@ -4925,6 +5679,38 @@ extern "C" void exl_main(void* x0, void* x1) {
 
 #if OCOOP_DEV_DIAGNOSTICS
 #include "program/diagnostics_private/fragment_080.inc"
+#include "program/diagnostics_private/fragment_082.inc"
+#include "program/diagnostics_private/fragment_086.inc"
+#include "program/diagnostics_private/fragment_092.inc"
+#include "program/diagnostics_private/fragment_094.inc"
+#include "program/diagnostics_private/fragment_096.inc"
+#include "program/diagnostics_private/fragment_098.inc"
+#include "program/diagnostics_private/fragment_100.inc"
+#include "program/diagnostics_private/fragment_102.inc"
+#include "program/diagnostics_private/fragment_104.inc"
+#include "program/diagnostics_private/fragment_106.inc"
+#include "program/diagnostics_private/fragment_108.inc"
+#include "program/diagnostics_private/fragment_110.inc"
+#include "program/diagnostics_private/fragment_112.inc"
+#include "program/diagnostics_private/fragment_114.inc"
+#include "program/diagnostics_private/fragment_116.inc"
+#include "program/diagnostics_private/fragment_118.inc"
+#include "program/diagnostics_private/fragment_120.inc"
+#include "program/diagnostics_private/fragment_122.inc"
+#include "program/diagnostics_private/fragment_124.inc"
+#include "program/diagnostics_private/fragment_126.inc"
+#include "program/diagnostics_private/fragment_139.inc"
+#include "program/diagnostics_private/fragment_143.inc"
+#endif
+
+#if PATCH_0052_ENABLED
+    Patch0052PauseMenuPrivateMode::InstallAtOffset(
+        PatchOffsets::RsIsSeparatePlay);
+    Patch0052RequestModeAndRestart::InstallAtOffset(
+        PatchOffsets::RsChangeSeparatePlayMode);
+    Patch0052SequenceKillSceneForRestart::InstallAtOffset(
+        PatchOffsets::HakoniwaSequenceExePlayStage);
+    Logging.Log("[OCoop] PATCH-0052 installed (private menu selector + bidirectional scene lifecycle)");
 #endif
 
 #if PATCH_0001_ENABLED
@@ -5165,6 +5951,29 @@ extern "C" void exl_main(void* x0, void* x1) {
 #if PATCH_0013_ENABLED
     Patch0013CapReturnOwner::InstallAtOffset(PatchOffsets::RsGetPlayerHeadPos);
     Logging.Log("[OCoop] PATCH-0013 v2 installed (cap-return owner @ 0x56f618)");
+#endif
+#if PATCH_0048_ENABLED
+    Patch0048P2MapOpenTrigger::InstallAtOffset(PatchOffsets::RsIsTriggerMapOpen);
+    Logging.Log("[OCoop] PATCH-0048 installed (P2 map-open via native dual-port acceptor @ 0x576a04 -> 0x576d1c)");
+#endif
+
+#if PATCH_0049_ENABLED
+    Patch0049UiLeftStick::InstallAtOffset(PatchOffsets::RsGetUiLeftStick);
+    Patch0049UiRightStick::InstallAtOffset(PatchOffsets::RsGetUiRightStick);
+    Patch0049MapConfirm::InstallAtOffset(PatchOffsets::StageMapTryCheckpointWarp);
+    Logging.Log("[OCoop] PATCH-0049 installed (P2 map navigation: pan @ 0x576afc, zoom @ 0x576bfc, confirm @ 0x4f161c)");
+#endif
+
+#if PATCH_0050_ENABLED
+    Patch0050BalloonWait::InstallAtOffset(PatchOffsets::EventFlowNodeMessageBalloonExeWait);
+    Patch0050TalkTextAnim::InstallAtOffset(PatchOffsets::TalkMessageExeTextAnim);
+    Patch0050TalkIconWait::InstallAtOffset(PatchOffsets::TalkMessageExeIconWait);
+    Logging.Log("[OCoop] PATCH-0050 installed (P2 NPC talk: balloon @ 0x1b79ec nearest-player, message @ 0x20de5c/0x20e068 dual-port)");
+#endif
+#if PATCH_0051_ENABLED
+    Patch0051CoalesceCompletedPausePreset::InstallAtOffset(
+        PatchOffsets::GraphicsPresetDirectorRequestPreset);
+    Logging.Log("[OCoop] PATCH-0051 installed (forward first exact Pause preset per director; suppress completed reapplications)");
 #endif
 #if OCOOP_DEV_DIAGNOSTICS
 #include "program/diagnostics_private/fragment_057.inc"

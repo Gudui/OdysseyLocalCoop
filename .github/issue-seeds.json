@@ -19,11 +19,6 @@
   ],
   "issues": [
     {
-      "title": "Gate P2 creation on Odyssey's native player-mode lifecycle",
-      "labels": ["bug", "alpha", "severity: critical", "input"],
-      "body": "The mod currently creates P2 whenever a second controller is present, even when Odyssey's native player mode is not compatible. Entering native 2P mode can route Cappy to the wrong player or make P1 control both actors. Add an explicit lifecycle gate so P2 exists only in the supported full-player mode, and make transitions between menu, stage, and controller states safe.\n\nCurrent workaround: use normal in-game 1P mode and restart after entering native 2P mode."
-    },
-    {
       "title": "Prevent terminal-death recovery softlocks",
       "labels": ["bug", "alpha", "severity: high", "respawn"],
       "body": "Some P2 terminal-damage paths can select recovery before the native dead state. P2 may remain able to turn but cannot move, respawn, or accept further damage, and a boss scene may stop progressing. Preserve terminal death until the delayed respawn path completes, without changing recoverable falls or solo behavior."

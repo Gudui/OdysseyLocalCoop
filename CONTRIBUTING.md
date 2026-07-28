@@ -5,7 +5,7 @@ Thank you for helping improve Odyssey Local Co-op. Bug reports, documentation co
 ## Before opening an issue
 
 1. Read [KNOWN_ISSUES.md](KNOWN_ISSUES.md) and search existing issues.
-2. Reproduce on Super Mario Odyssey 1.0.0 in normal 1P mode.
+2. Reproduce on Super Mario Odyssey 1.0.0 in the intended pause-menu `One Player` or `Two Players` state.
 3. Record the mod version, emulator or hardware target, stage, controller setup, exact steps, expected result, and actual result.
 4. Retest with unrelated gameplay mods disabled when practical.
 5. Redact personal paths, usernames, tokens, and unrelated information from logs.

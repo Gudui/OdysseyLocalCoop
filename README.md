@@ -19,6 +19,7 @@ This is an early alpha. Save backups are recommended, game behavior outside the 
 ## What the mod adds
 
 - Two Mario player characters in the same stage, each controlled by a separate controller.
+- Pause-menu `Two Players` and `One Player` actions that safely start and end full-player co-op.
 - A distinct green costume for P2, configurable through `settings.ini`.
 - A shared camera that frames both players, zooms with distance, and accepts camera input from either controller.
 - Recovery bubbles that bring a fallen or separated player back toward their partner.
@@ -35,9 +36,9 @@ The competition HUD is included in the normal release ZIP and requires no separa
 - A legally obtained copy of Super Mario Odyssey **version 1.0.0**.
 - A current Ryujinx-compatible installation with the game already configured.
 - Two controllers configured as separate players before entering a stage.
-- The `OdysseyLocalCoop-v0.1.0-alpha.4.zip` release package.
+- The `OdysseyLocalCoop-v0.1.0-alpha.5.zip` release package.
 
-Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; this mod supplies the second full player actor itself.
+Start normally with P1, then select `Two Players` from Odyssey's pause menu. Connect the second controller when prompted. Select `One Player` from the same menu to return to solo play.
 
 ## Install on Ryujinx
 
@@ -45,7 +46,7 @@ Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; 
 2. Verify the archive hash:
 
    ```powershell
-   Get-FileHash .\OdysseyLocalCoop-v0.1.0-alpha.4.zip -Algorithm SHA256
+   Get-FileHash .\OdysseyLocalCoop-v0.1.0-alpha.5.zip -Algorithm SHA256
    ```
 
 3. Extract the ZIP and inspect `install.ps1` if desired.
@@ -58,7 +59,7 @@ Do not select Odyssey's built-in 2P mode. Start the game in its normal 1P mode; 
 
    The installer verifies every packaged file before copying the mod into Ryujinx's per-title `mods/contents` directory. Existing files at the exact destination paths are backed up before replacement.
 
-5. Configure two separate controllers in Ryujinx, launch Super Mario Odyssey 1.0.0, and enter a stage in normal 1P mode.
+5. Configure two separate controllers in Ryujinx, launch Super Mario Odyssey 1.0.0, enter a stage, and select `Two Players` from the pause menu.
 
 For a manual installation, copy the package's `payload/contents` directory into Ryujinx's `mods` directory, preserving the title-ID, `exefs`, and `romfs` paths.
 
@@ -83,8 +84,8 @@ Close Ryujinx before editing it. Settings are reloaded when a new `StageScene` i
 ### P2 does not appear
 
 - Confirm the game reports version 1.0.0.
-- Connect and configure both controllers before loading the stage.
-- Use Odyssey's normal 1P mode, not its built-in 2P mode.
+- Configure both controllers in Ryujinx, then select `Two Players` from the pause menu.
+- Complete the controller prompt; P2 appears after the stage rebuild.
 - Temporarily disable other executable or gameplay mods to rule out a conflict.
 - Leave and re-enter the stage after changing controller or configuration settings.
 
@@ -97,13 +98,13 @@ Close Ryujinx before editing it. Settings are reloaded when a new `StageScene` i
 
 ### Controllers affect the wrong actor
 
-Exit Odyssey's built-in 2P mode, restart in normal 1P mode, and reload the stage. Native 2P-mode lifecycle handling is a known alpha limitation.
+Select `One Player`, wait for the stage to rebuild, then select `Two Players` again. If routing remains incorrect, restart Odyssey and temporarily disable other executable or controller-related mods.
 
 See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) before reporting a new problem.
 
 ## How it works
 
-The mod is an [ExLaunch](https://github.com/shadowninja108/exlaunch) `subsdk9` module for the 1.0.0 executable. During stage initialization it captures the live construction information Odyssey uses for P1, creates a second native player actor while that information is valid, assigns the second controller port, and registers the actor with the stage's existing player holder.
+The mod is an [ExLaunch](https://github.com/shadowninja108/exlaunch) `subsdk9` module for the 1.0.0 executable. Odyssey's pause-menu player-mode actions select a private full-player co-op mode and rebuild the current stage at a native scene boundary. During two-player stage initialization, the mod captures the live construction information Odyssey uses for P1, creates a second native player actor while that information is valid, assigns the second controller port, and registers the actor with the stage's existing player holder.
 
 The guiding approach is to reuse Odyssey's native actors, state machines, layouts, and transitions wherever possible. Most incompatibilities come from otherwise-correct game systems asking for player index zero. The mod changes those assumptions only inside the narrow operation that needs two-player context, leaving the surrounding game behavior native.
 

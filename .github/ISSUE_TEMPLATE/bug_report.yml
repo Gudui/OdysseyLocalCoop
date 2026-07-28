@@ -47,8 +47,8 @@ body:
     attributes:
       label: In-game player mode
       options:
-        - Normal 1P mode
-        - Odyssey native 2P mode
+        - One Player
+        - Two Players
         - Unsure
     validations:
       required: true
@@ -72,7 +72,7 @@ body:
       label: Reproduction steps
       description: Give numbered steps starting from a fresh launch when possible.
       placeholder: |
-        1. Start the game in normal 1P mode...
+        1. Start the game and select One Player or Two Players...
         2. Enter...
         3. As P2...
     validations:
